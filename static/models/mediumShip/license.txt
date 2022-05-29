@@ -1,0 +1,11 @@
+Model Information:
+* title:	Pirate Ship (Low Poly)
+* source:	https://sketchfab.com/3d-models/pirate-ship-low-poly-d9953f66583340c4879a3770f6d09a37
+* author:	Ana Vassallo (https://sketchfab.com/anagvf)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Pirate Ship (Low Poly)" (https://sketchfab.com/3d-models/pirate-ship-low-poly-d9953f66583340c4879a3770f6d09a37) by Ana Vassallo (https://sketchfab.com/anagvf) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

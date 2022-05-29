@@ -1,7 +1,3 @@
-
-//klasa Game - działania w 3D, generowanie planszy, pionków
-// import * as THREE from "../node_modules/three/build/three.module.js"
-// import { FBXLoader} from "";
  class Game {
     constructor() {
         console.log("construct")
@@ -13,12 +9,13 @@
         document.getElementById("root").append(this.renderer.domElement);
         this.chessboard = []
         this.pawns = []
-        this.camera.position.set(275, 200, 275)
+        this.camera.position.set(250, 131, 250)
         this.camera.lookAt(this.scene.position)
         this.axes = new THREE.AxesHelper(1000)
         this.scene.add(this.axes)
         this.render() // wywołanie metody render
         this.setup()
+        this.ships = []
     }
     setup = ()=>{
         let sandGeometry = new THREE.PlaneGeometry( 2000, 2000, 100, 100 );
@@ -50,16 +47,17 @@
         const water = new THREE.Mesh( waterGeometry, waterMaterial );
         water.position.y = 30
         this.scene.add( water );
-
-        const light = new THREE.AmbientLight(0xffffff, 1);
+        const light = new THREE.AmbientLight(0xffffff, 2);
         this.scene.add(light);
-        modelLoaders.loadMediumBoat()
-        modelLoaders.loadRaft()
-
-       
+        // modelLoaders.loadRaft()
+        // modelLoaders.loadSmallShip()
+        modelLoaders.loadMediumShip()
+        // modelLoaders.loadLargeShip()
         }
+
     render = () => {
         requestAnimationFrame(this.render);
+        TWEEN.update();
         this.renderer.render(this.scene, this.camera);
     }
 
