@@ -1,6 +1,5 @@
  class Game {
     constructor() {
-        console.log("construct")
         this.scene = new THREE.Scene();
         this.camera = new THREE.PerspectiveCamera(45, 16 / 9, 0.1, 10000);
         this.renderer = new THREE.WebGLRenderer();
@@ -28,6 +27,7 @@
             [0,0,0,0,0,0,0,0,0,0],
             [0,0,0,0,0,0,0,0,0,0],
         ]
+        this.fieldsToChoseObjects = []
     }
     setup = ()=>{
         let loader = new THREE.TextureLoader();
@@ -66,6 +66,7 @@
         this.angle = 0
         }
         loadWaitingScreen(){
+            ui.switchDisplayById("wait","block")
             this.waitForOpponent = true;
             modelLoaders.loadSmallShipIdle(140,30,170,Math.PI - 0.5)
             modelLoaders.loadSmallShipIdle(-60,30,170,Math.PI/2)
@@ -85,12 +86,13 @@
         }
         pickShips(){
             animations.cameraToChoose(this.camera)
+            ui.switchDisplayById("wait","none")
             this.waitForOpponent = false;
         }
         generateFieldsToChose(){
-            console.log(this.camera.position)
             this.camera.lookAt(this.camera.position.x,0,this.camera.position.z)
             let shift =2000;
+            let fieldId=0;
             this.fieldsToChose.map((array,i)=>{
                 array.map((item,j)=>{
                     const geometry = new THREE.BoxGeometry( 25, 1, 25 );
@@ -101,9 +103,14 @@
                         opacity: 1, 
                     })
                     const cube = new THREE.Mesh( geometry, material );
+                    cube.name = "select"
+                    cube.x = i
+                    cube.y = j
+                    cube.fieldId = fieldId
+                    fieldId+=1;
                     cube.position.set(shift + (i * 25) - (25 * this.fieldsToChose.length) / 2, 30,(j * 25)  - (25 * this.fieldsToChose.length) / 2)
-                    console.log(cube.position)
                     this.scene.add( cube );
+                    this.fieldsToChoseObjects.push(cube)
                 })
             })
         }
@@ -119,3 +126,27 @@
         this.renderer.render(this.scene, this.camera);
     }
  }
+
+
+ window.addEventListener("mousedown", (e) => {
+    const raycaster = new THREE.Raycaster();
+    const mouseVector = new THREE.Vector2()
+    mouseVector.x = (e.clientX / window.innerWidth) * 2 - 1;
+    mouseVector.y = -(e.clientY / window.innerHeight) * 2 + 1;
+    raycaster.setFromCamera(mouseVector, game.camera);
+    const intersects = raycaster.intersectObjects(game.scene.children);
+    if (intersects.length > 0) {
+        let clickedObject = intersects[0].object;
+        if(clickedObject.name=="select"){
+            console.log(`(${clickedObject.fieldId})`)
+            const material = new THREE.MeshBasicMaterial({
+                side: THREE.DoubleSide, 
+                map: new THREE.TextureLoader().load('../../textures/chosenField.png'), 
+                transparent: true, 
+                opacity: 1, 
+            })
+            let clicked = game.fieldsToChoseObjects.find((element)=>{return element.fieldId == clickedObject.fieldId})
+            clicked.material = material
+        }
+    }
+})

@@ -34,7 +34,7 @@ class Animations{
             .repeat(0) 
             .easing(TWEEN.Easing.Exponential.In) 
             .onUpdate()
-            .onComplete(()=>{game.generateFieldsToChose()})
+            .onComplete(()=>{game.generateFieldsToChose(); ui.switchDisplayById("shipTypeButtons","block");})
             .start()
     }
 }

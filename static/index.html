@@ -14,6 +14,7 @@
     <script  src="./scripts/classes/ModelLoaders.js" ></script>
     <script  src="./scripts/classes/Animations.js" ></script>
     <script src="./scripts/classes/Game.js" ></script>
+    <script src="./scripts/classes/Ui.js" ></script>
     <script src="./scripts/main.js"  ></script>
     <link rel="stylesheet" href="./styles/style.css">
 </head>
@@ -24,10 +25,27 @@
     <button style="position: absolute; z-index: 2; top: 20px; left: 50px;" onclick="game.loadWaitingScreen()">START!</button>
     <div id="root">
     </div>
-    <h1 class="wait">Czekaj na przeciwnika!</h1>
+    <div class="ui-chosing-ships-buttons" id="shipTypeButtons">
+        <div class="button" onclick="ui.selectShipType(this,1)">
+            <p>Jedynka</p>
+        </div>
+        <div class="button" onclick="ui.selectShipType(this,2)">
+            <p>Dwójka</p>
+        </div>
+        <div class="button" onclick="ui.selectShipType(this,3)">
+            <p>Trójka</p>
+        </div>
+        <div class="button" onclick="ui.selectShipType(this,4)">
+            <p>Czwórka</p>
+        </div>
+    </div>
+    <h1 class="wait" id="wait">Czekaj na przeciwnika!</h1>
     <script src="/socket.io/socket.io.js"></script>
     <script>
     var socket = io();
+        socket.on('test', function(msg) {
+            console.log(msg)
+    });
     </script>
 </body>
 </html>

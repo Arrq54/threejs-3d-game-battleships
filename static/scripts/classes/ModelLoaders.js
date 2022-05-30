@@ -1,6 +1,5 @@
 class ModelLoaders{
     constructor(){
-        console.log("loaders")
     }
     loadIsland(){
         const loader = new THREE.GLTFLoader();
@@ -66,7 +65,6 @@ class ModelLoaders{
                 gltf.scene.position.set(x,y,z)
                 game.scene.add(gltf.scene);
                 console.log("medium idle")
-                // game.ships.push(gltf.scene)   ---- DODANIE STATKU DO JAKIEJS TABELI W GAMIE -> NA PRZYSZLOSC
             }, undefined, function (error) {
                 console.error(error);
             });
@@ -77,7 +75,6 @@ class ModelLoaders{
                 gltf.scene.scale.set(0.1,0.1,0.1)
                 game.scene.add(gltf.scene);
                 gltf.scene.position.set(0,40,0)
-                // game.ships.push(gltf.scene)   ---- DODANIE STATKU DO JAKIEJS TABELI W GAMIE -> NA PRZYSZLOSC
             }, undefined, function (error) {
                 console.error(error);
             });
@@ -92,7 +89,6 @@ class ModelLoaders{
             model.scale.set(0.04,0.04,0.04)
             model.rotation.y = Math.PI
             game.scene.add(model)
-            // game.ships.push(model)   ---- DODANIE STATKU DO JAKIEJS TABELI W GAMIE -> NA PRZYSZLOSC
         });
     }
 }

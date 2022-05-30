@@ -13,4 +13,33 @@
     top:50px;
     transform: translateX(-50%);
     color: white;
+    display: none;
+}
+.ui-chosing-ships-buttons{
+    z-index: 3;
+    position: absolute;
+    top: 300px;
+    left: 0;
+    width: 200px;
+    height: 600px;
+    padding: 10px;
+    text-align: center;
+}
+.button{
+    background-color: rgb(54, 54, 54);
+    padding: 10px;
+    border-radius: 20px;
+    color: white;
+    cursor: pointer;
+    margin: 20px;
+    transition: 0.3s all ease;
+}
+.clicked{
+    padding: 18px;
+    border: 2px solid lime;
+    color: lime;
+    transition: 0.3s all ease;
+}
+#shipTypeButtons{
+    display: none;
 }

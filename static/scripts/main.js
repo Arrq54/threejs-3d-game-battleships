@@ -3,6 +3,7 @@ window.onload = ()=>{
     modelLoaders = new ModelLoaders();
     game = new Game()
     animations = new Animations()
+    ui = new Ui()
 }
 window,onresize = ()=>{
     game.camera.aspect = window.innerWidth / window.innerHeight;
