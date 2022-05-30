@@ -17,10 +17,17 @@
     <script src="./scripts/main.js"  ></script>
     <link rel="stylesheet" href="./styles/style.css">
 </head>
+
 <body>
     <!-- <button style="position: absolute; z-index: 2; top: 50px; left: 50px;" onclick="animations.sink(game.ships[0])">SINK</button> -->
+    <button style="position: absolute; z-index: 2; top: 50px; left: 50px;" onclick="game.pickShips()">PLACE YOUR SHIPS!</button>
+    <button style="position: absolute; z-index: 2; top: 20px; left: 50px;" onclick="game.loadWaitingScreen()">START!</button>
     <div id="root">
     </div>
+    <h1 class="wait">Czekaj na przeciwnika!</h1>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+    var socket = io();
+    </script>
 </body>
-
 </html>

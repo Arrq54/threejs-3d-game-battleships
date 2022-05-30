@@ -9,16 +9,30 @@
         document.getElementById("root").append(this.renderer.domElement);
         this.chessboard = []
         this.pawns = []
-        this.camera.position.set(250, 131, 250)
+        this.camera.position.set(600, 231, 600)
         this.camera.lookAt(this.scene.position)
         this.axes = new THREE.AxesHelper(1000)
         this.scene.add(this.axes)
         this.render() // wywołanie metody render
         this.setup()
         this.ships = []
+        this.fieldsToChose = [
+            [0,0,0,0,0,0,0,0,0,0],
+            [0,0,0,0,0,0,0,0,0,0],
+            [0,0,0,0,0,0,0,0,0,0],
+            [0,0,0,0,0,0,0,0,0,0],
+            [0,0,0,0,0,0,0,0,0,0],
+            [0,0,0,0,0,0,0,0,0,0],
+            [0,0,0,0,0,0,0,0,0,0],
+            [0,0,0,0,0,0,0,0,0,0],
+            [0,0,0,0,0,0,0,0,0,0],
+            [0,0,0,0,0,0,0,0,0,0],
+        ]
     }
     setup = ()=>{
-        let sandGeometry = new THREE.PlaneGeometry( 2000, 2000, 100, 100 );
+        let loader = new THREE.TextureLoader();
+        this.scene.background = loader.load( '../../textures/background2.jpeg' );
+        let sandGeometry = new THREE.PlaneGeometry( 6000, 6000, 100, 100 );
         sandGeometry.rotateX( -Math.PI / 2 );
         const vertex = new THREE.Vector3();
         let position = sandGeometry.attributes.position;
@@ -41,7 +55,7 @@
         const sandMaterial = new THREE.MeshBasicMaterial( {vertexColors: true } );
         const sand = new THREE.Mesh( sandGeometry, sandMaterial );
         this.scene.add( sand );
-        const waterGeometry = new THREE.PlaneGeometry( 2000, 2000, 100, 100 );
+        const waterGeometry = new THREE.PlaneGeometry( 5000, 5000, 100, 100 );
         waterGeometry.rotateX(Math.PI / 2 );
         const waterMaterial = new THREE.MeshBasicMaterial( {color: 0x46b7e3, side: THREE.DoubleSide,transparent: true, opacity: 0.6} );
         const water = new THREE.Mesh( waterGeometry, waterMaterial );
@@ -49,17 +63,59 @@
         this.scene.add( water );
         const light = new THREE.AmbientLight(0xffffff, 2);
         this.scene.add(light);
-        // modelLoaders.loadRaft()
-        // modelLoaders.loadSmallShip()
-        modelLoaders.loadMediumShip()
-        // modelLoaders.loadLargeShip()
+        this.angle = 0
         }
-
+        loadWaitingScreen(){
+            this.waitForOpponent = true;
+            modelLoaders.loadSmallShipIdle(140,30,170,Math.PI - 0.5)
+            modelLoaders.loadSmallShipIdle(-60,30,170,Math.PI/2)
+            modelLoaders.loadSmallShipIdle(-120,30,-180,Math.PI)
+            modelLoaders.loadLargeShipIdle(80,40,-250,Math.PI+0.5)
+            modelLoaders.loadLargeShipIdle(-380,40,-420,Math.PI+0.5)
+            modelLoaders.loadLargeShipIdle(-620,40,-720,Math.PI+0.5)
+            modelLoaders.loadSmallShipIdle(-220,30,-180,Math.PI)
+            modelLoaders.loadMediumShipIdle(-500,30,20,Math.PI)
+            modelLoaders.loadMediumShipIdle(500,30,20,Math.PI)
+            modelLoaders.loadMediumShipIdle(170,30,20,Math.PI)
+            modelLoaders.loadMediumShipIdle(250,30,320,Math.PI+0.3)
+            modelLoaders.loadMediumShipIdle(650,30,-820,0)
+            modelLoaders.loadIsland()
+            var audio = new Audio('../../sound/soundtrack/waiting theme.mp3');
+            audio.play();
+        }
+        pickShips(){
+            animations.cameraToChoose(this.camera)
+            this.waitForOpponent = false;
+        }
+        generateFieldsToChose(){
+            console.log(this.camera.position)
+            this.camera.lookAt(this.camera.position.x,0,this.camera.position.z)
+            let shift =2000;
+            this.fieldsToChose.map((array,i)=>{
+                array.map((item,j)=>{
+                    const geometry = new THREE.BoxGeometry( 25, 1, 25 );
+                    const material = new THREE.MeshBasicMaterial({
+                        side: THREE.DoubleSide, 
+                        map: new THREE.TextureLoader().load('../../textures/fieldToChose.png'), 
+                        transparent: true, 
+                        opacity: 1, 
+                    })
+                    const cube = new THREE.Mesh( geometry, material );
+                    cube.position.set(shift + (i * 25) - (25 * this.fieldsToChose.length) / 2, 30,(j * 25)  - (25 * this.fieldsToChose.length) / 2)
+                    console.log(cube.position)
+                    this.scene.add( cube );
+                })
+            })
+        }
     render = () => {
+        if(this.waitForOpponent){
+            this.camera.position.z = 600 * Math.cos(this.angle);
+            this.camera.position.x = 600 * Math.sin(this.angle);
+            this.camera.lookAt(0,150,0)
+            this.angle+=0.005
+        }
         requestAnimationFrame(this.render);
         TWEEN.update();
         this.renderer.render(this.scene, this.camera);
     }
-
-}
-
+ }

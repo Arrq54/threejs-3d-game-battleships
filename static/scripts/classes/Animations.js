@@ -1,6 +1,5 @@
 class Animations{
     constructor(params) {
-        
     }
     sink(ship){
         var audio = new Audio('../../sound/effects/splash.mp3');
@@ -21,6 +20,21 @@ class Animations{
                     .onComplete()
                     .start()
                     })
+            .start()
+    }
+    waitingForOpponent(){
+
+    }
+    cameraToChoose(camera){
+        console.log(camera)
+        let obj = game.scene.position
+        console.log(obj)
+        new TWEEN.Tween(camera.position) 
+            .to({ x: 2000, y: 450, z: 0 }, 2050)
+            .repeat(0) 
+            .easing(TWEEN.Easing.Exponential.In) 
+            .onUpdate()
+            .onComplete(()=>{game.generateFieldsToChose()})
             .start()
     }
 }

@@ -6,3 +6,11 @@
 #root{
     overflow: hidden;
 }
+.wait{
+    position: absolute;
+    font-size: 75px;
+    left: 50%;
+    top:50px;
+    transform: translateX(-50%);
+    color: white;
+}
