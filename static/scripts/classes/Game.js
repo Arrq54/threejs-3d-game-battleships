@@ -28,6 +28,15 @@
             [0,0,0,0,0,0,0,0,0,0],
         ]
         this.fieldsToChoseObjects = []
+        this.clickedMat = new THREE.MeshBasicMaterial({ map: new THREE.TextureLoader().load('../../textures/chosenField.png') })
+        this.notClickedMat = new THREE.MeshBasicMaterial({map: new THREE.TextureLoader().load('../../textures/fieldToChose.png') }) 
+        this.cantPlaceMat = new THREE.MeshBasicMaterial({map: new THREE.TextureLoader().load('../../textures/cantPlace.png') }) 
+        this.raftsLeft = 4;
+        this.smallShipsLeft = 3;
+        this.mediumShipsLeft =2;
+        this.largeShipsLeft = 1;
+        this.cantPlaceArray = []
+        this.cantPlaceArrayHelp = []
     }
     setup = ()=>{
         let loader = new THREE.TextureLoader();
@@ -81,8 +90,8 @@
             modelLoaders.loadMediumShipIdle(250,30,320,Math.PI+0.3)
             modelLoaders.loadMediumShipIdle(650,30,-820,0)
             modelLoaders.loadIsland()
-            var audio = new Audio('../../sound/soundtrack/waiting theme.mp3');
-            audio.play();
+            // var audio = new Audio('../../sound/soundtrack/waiting theme.mp3');
+            // audio.play();
         }
         pickShips(){
             animations.cameraToChoose(this.camera)
@@ -108,6 +117,8 @@
                     cube.y = j
                     cube.fieldId = fieldId
                     fieldId+=1;
+                    cube.canPutShip = true;
+                    cube.checked = false;
                     cube.position.set(shift + (i * 25) - (25 * this.fieldsToChose.length) / 2, 30,(j * 25)  - (25 * this.fieldsToChose.length) / 2)
                     this.scene.add( cube );
                     this.fieldsToChoseObjects.push(cube)
@@ -138,15 +149,60 @@
     if (intersects.length > 0) {
         let clickedObject = intersects[0].object;
         if(clickedObject.name=="select"){
-            console.log(`(${clickedObject.fieldId})`)
-            const material = new THREE.MeshBasicMaterial({
-                side: THREE.DoubleSide, 
-                map: new THREE.TextureLoader().load('../../textures/chosenField.png'), 
-                transparent: true, 
-                opacity: 1, 
-            })
+            let canChange=false;
             let clicked = game.fieldsToChoseObjects.find((element)=>{return element.fieldId == clickedObject.fieldId})
-            clicked.material = material
+            if(clicked.hasShip ){
+                canChange=true;
+                clicked.hasShip=false;
+                if(game.typeOfChosingShip==1){
+                    game.raftsLeft+=1;
+                    ui.updateRaftsLeft()
+                }
+                let blockedFieldsArray = game.cantPlaceArray.find((element)=>{return element.fieldId == clicked.fieldId})
+                blockedFieldsArray.fields.map((element)=>{
+                    help = game.cantPlaceArrayHelp.filter((item,index)=>{return item.x==element.x && item.y==element.y})
+                    if(help.length==1){
+                        element.material = game.notClickedMat
+                        element.canPutShip = true;
+                    }
+                    let stay = help[0]
+                    game.cantPlaceArrayHelp = game.cantPlaceArrayHelp.filter((item,index)=>{return item.fieldId!=help[0].fieldId})
+                    for(let h=0;h<help.length-1;h++){
+                        game.cantPlaceArrayHelp.push(stay)
+                    }
+                })
+                game.cantPlaceArray = game.cantPlaceArray.filter((element)=>{return element.fieldId != clicked.fieldId})
+            }
+            if(game.typeOfChosingShip==1 && !clicked.checked && clicked.canPutShip){
+                if( game.raftsLeft!=0){
+                    game.raftsLeft -=1;
+                    clicked.hasShip = true;
+                    ui.updateRaftsLeft()
+                    canChange=true;
+                    console.log(`(${clicked.x},${clicked.y})`)
+                    let xs = [-1,-1,-1,0,0,1,1,1]
+                    let ys = [-1,0,1,-1,1,-1,0,1]
+                    let temp = []
+                    xs.map((v,i)=>{
+                        obj = game.fieldsToChoseObjects.find((element)=>{return (element.x==clicked.x+xs[i] && element.y==clicked.y+ys[i])})
+                        if(obj!=undefined){
+                            obj.material = game.cantPlaceMat
+                            obj.canPutShip = false;
+                            game.cantPlaceArrayHelp.push(obj)
+                            temp.push(obj)
+                        }
+                        
+                    })
+                    game.cantPlaceArray.push({fieldId: clicked.fieldId, fields: temp})
+                }
+            }
+            
+
+            if(canChange){
+                let clicked = game.fieldsToChoseObjects.find((element)=>{return element.fieldId == clickedObject.fieldId})
+                clickedObject.checked?clicked.material = game.notClickedMat:clicked.material = game.clickedMat
+                clicked.checked = !clicked.checked;
+            }
         }
     }
 })

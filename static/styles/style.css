@@ -43,3 +43,15 @@
 #shipTypeButtons{
     display: none;
 }
+.shipsLeft{
+    position: absolute;
+    font-size: 75px;
+    left: 50%;
+    top: 5px;
+    transform: translateX(-50%);
+    color: white;
+    
+}
+#shipsLeftBox{
+    display: none;
+}

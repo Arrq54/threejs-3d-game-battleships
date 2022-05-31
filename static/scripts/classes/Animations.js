@@ -30,7 +30,7 @@ class Animations{
         let obj = game.scene.position
         console.log(obj)
         new TWEEN.Tween(camera.position) 
-            .to({ x: 2000, y: 450, z: 0 }, 2050)
+            .to({ x: 2000, y: 450, z: 0 }, 100)
             .repeat(0) 
             .easing(TWEEN.Easing.Exponential.In) 
             .onUpdate()
