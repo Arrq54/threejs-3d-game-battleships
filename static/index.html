@@ -1,52 +1,81 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
     <script src="./libs/tween.umd.js"></script>
     <script src="./libs/fflate.min.js"></script>
     <script src="./libs/three.js"></script>
     <script src="https://threejs.org/examples/js/loaders/FBXLoader.js"></script>
     <script src="https://threejs.org/examples/js/loaders/GLTFLoader.js"></script>
-    <script  src="./scripts/classes/ModelLoaders.js" ></script>
-    <script  src="./scripts/classes/Animations.js" ></script>
-    <script src="./scripts/classes/Game.js" ></script>
-    <script src="./scripts/classes/Ui.js" ></script>
-    <script src="./scripts/main.js"  ></script>
-    <link rel="stylesheet" href="./styles/style.css">
-</head>
+    <script src="./scripts/classes/ModelLoaders.js"></script>
+    <script src="./scripts/classes/Animations.js"></script>
+    <script src="./scripts/classes/Game.js"></script>
+    <script src="./scripts/classes/Ui.js"></script>
+    <script src="./scripts/main.js"></script>
+    <link rel="stylesheet" href="./styles/style.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Berkshire+Swash&display=swap"
+      rel="stylesheet"
+    />
+  </head>
 
-<body>
-    <!-- <button style="position: absolute; z-index: 2; top: 50px; left: 50px;" onclick="animations.sink(game.ships[0])">SINK</button> -->
-    <button style="position: absolute; z-index: 2; top: 50px; left: 50px;" onclick="game.pickShips()">PLACE YOUR SHIPS!</button>
-    <button style="position: absolute; z-index: 2; top: 20px; left: 50px;" onclick="game.loadWaitingScreen()">START!</button>
-    <div id="root">
+  <body>
+    <div id="loginBox">
+      <h2>Choose your name</h2>
+      <input
+        autocomplete="off"
+        type="text"
+        name="username"
+        placeholder="Username"
+      />
+      <button id="playButton">PLAY</button>
+      <img id="skull" src="./czacha.png" />
     </div>
-    <div class="ui-chosing-ships-buttons" id="shipTypeButtons">
+
+    <!-- <button style="position: absolute; z-index: 2; top: 50px; left: 50px;" onclick="animations.sink(game.ships[0])">SINK</button> -->
+    <div id="placeShips" style="display: none">
+      <button
+        style="position: absolute; z-index: 2; top: 50px; left: 50px"
+        onclick="game.pickShips()"
+      >
+        PLACE YOUR SHIPS!
+      </button>
+      <button
+        style="position: absolute; z-index: 2; top: 20px; left: 50px"
+        onclick="game.loadWaitingScreen()"
+      >
+        START!
+      </button>
+      <div id="root"></div>
+      <div class="ui-chosing-ships-buttons" id="shipTypeButtons">
         <div class="button" onclick="ui.selectShipType(this,1)">
-            <p>Jedynka</p>
+          <p>Jedynka</p>
         </div>
         <div class="button" onclick="ui.selectShipType(this,2)">
-            <p>Dwójka</p>
+          <p>Dwójka</p>
         </div>
         <div class="button" onclick="ui.selectShipType(this,3)">
-            <p>Trójka</p>
+          <p>Trójka</p>
         </div>
         <div class="button" onclick="ui.selectShipType(this,4)">
-            <p>Czwórka</p>
+          <p>Czwórka</p>
         </div>
+      </div>
+      <h1 class="wait" id="wait">Czekaj na przeciwnika!</h1>
+      <h2 class="shipsLeft" id="shipsLeftBox">
+        Zostało : <span id="shipsLeft"></span>
+      </h2>
     </div>
-    <h1 class="wait" id="wait">Czekaj na przeciwnika!</h1>
-    <h2 class="shipsLeft" id="shipsLeftBox">Zostało : <span id="shipsLeft"></span></h2>
+
     <script src="/socket.io/socket.io.js"></script>
     <script>
-    var socket = io();
-        socket.on('test', function(msg) {
-            console.log(msg)
-    });
+      var socket = io();
+      socket.on("test", function (msg) {
+        console.log(msg);
+      });
     </script>
-</body>
+  </body>
 </html>

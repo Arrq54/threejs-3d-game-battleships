@@ -16,14 +16,14 @@ app.get('/', function (req, res) {
 })
 io.on('connection', (socket) => {
     console.log('a user connected');
-    
-        io.emit('test', "socket io dziala");
-      
+
+    io.emit('test', "socket io dziala");
+
     socket.on('disconnect', () => {
-      console.log('user disconnected');
+        console.log('user disconnected');
     });
-  });
-  
+});
+
 app.use(express.static('static'))
 server.listen(PORT, function () {
     console.log("start serwera na porcie " + PORT)
