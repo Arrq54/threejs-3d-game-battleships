@@ -26,7 +26,6 @@ class Animations{
 
     }
     cameraToChoose(camera){
-        console.log(camera)
         let obj = game.scene.position
         console.log(obj)
         new TWEEN.Tween(camera.position) 
