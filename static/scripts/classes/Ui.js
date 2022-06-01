@@ -4,11 +4,33 @@ class Ui {
     }
     handleLogin = () => {
         let username = document.getElementsByName('username')[0].value
-        document.getElementById('loginBox').style.display = 'none'
-        document.body.style.background = 'none'
-        document.getElementById('placeShips').style.display = 'block'
-        ////do roboty
+        if(username.length < 1 || username.trim().length < 1){
+            document.getElementsByName('username')[0].style.borderTop = '2px solid rgba(115, 13, 13, 0.6)'
+            document.getElementsByName('username')[0].style.borderBottom = '2px solid rgba(115, 13, 13, 0.6)'
+            document.getElementsByName('username')[0].style.transform = 'scale(1.2)'
+            document.getElementsByName('username')[0].style.color = '#ff2d2dd8'
+            document.getElementsByName('username')[0].value = "You must have a name!"
+            document.getElementsByName('username')[0].style.fontSize = '19px'
+            document.getElementsByName('username')[0].onclick = this.switchStylesBack
+            return;
+        }
+            document.getElementById('loginBox').style.display = 'none'
+            document.body.style.background = 'none'
+            document.getElementById('placeShips').style.display = 'block'
+            socket.emit('loginSuccess', username);
     }
+
+    switchStylesBack = () => {
+        console.log("hejho")
+        document.getElementsByName('username')[0].style.borderTop = '1px solid rgba(255, 255, 255, 0.5)'
+        document.getElementsByName('username')[0].style.borderBottom = '1px solid rgba(255, 255, 255, 0.5)'
+        document.getElementsByName('username')[0].style.transform = 'scale(1.0)'
+        document.getElementsByName('username')[0].placeholder = "Username"
+        document.getElementsByName('username')[0].style.fontSize = '20px'
+        document.getElementsByName('username')[0].style.color = 'whitesmoke'
+        document.getElementsByName('username')[0].value= ''
+    }
+
 
     switchDisplayById(id, display) {
         document.querySelector(`#${id}`).style.display = display
