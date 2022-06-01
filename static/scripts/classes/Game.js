@@ -214,6 +214,41 @@
                     }
                    
                 }
+               
+                else if(clicked.shipType=="3"){
+                    game.mediumShipsLeft+=1;
+                    ui.updateRaftsLeft()
+                    clicked.material = game.notClickedMat
+                    clicked.checked = false
+                    clicked.hasShip = false;
+                    let temp = game.cantPlaceArray.find((item)=>{return item.fieldId == clicked.fieldId})
+                    let idtoDo = clicked.fieldId;
+                    clicked.otherBlocks.map((element)=>{
+                        element.hasShip = false;
+                        element.material = game.notClickedMat;
+                        element.checked = false;
+                        if(temp==undefined){
+                            temp = game.cantPlaceArray.find((item)=>{return item.fieldId == element.fieldId})
+                            idtoDo = element.fieldId
+                        }
+                    })
+                    temp.fields.map((element)=>{
+                        help = game.cantPlaceArrayHelp.filter((item,index)=>{return item.x==element.x && item.y==element.y})
+                        if(help.length==1){
+                            element.material = game.notClickedMat
+                            element.canPutShip = true;
+                        }
+                        let stay = help[0]
+                        game.cantPlaceArrayHelp = game.cantPlaceArrayHelp.filter((item,index)=>{return item.fieldId!=help[0].fieldId})
+                        for(let h=0;h<help.length-1;h++){
+                            game.cantPlaceArrayHelp.push(stay)
+                        }
+                    })
+                    game.cantPlaceArray = game.cantPlaceArray.filter((element)=>{return element.fieldId != idtoDo})
+                   
+                
+                    
+                }
                 removed=true;
             }
             if(!removed){
@@ -238,7 +273,7 @@
                             }
                         })
                         game.cantPlaceArray.push({fieldId: clicked.fieldId, fields: temp})
-                        clickedObject.checked?clicked.material = game.notClickedMat:clicked.material = game.clickedMat
+                        clicked.material = game.clickedMat
                         clicked.checked = true;
                     }
                 }else if(game.typeOfChosingShip==2 && !clicked.checked && clicked.canPutShip&&clicked.material != game.clickedMat&&clicked.hasShip==false){
@@ -275,22 +310,75 @@
                             field1.shipType = "2";
                             field1.otherBlock = clicked;
                             clicked.otherBlock = field1
-                            clickedObject.checked?clicked.material = game.notClickedMat:clicked.material = game.clickedMat
-                            clickedObject.checked?field1.material = game.notClickedMat:field1.material = game.clickedMat
+                            clicked.material = game.clickedMat
+                            field1.material = game.clickedMat
                             field1.checked = true;
                             clicked.checked = true;
                         }
                     }  
                 }
                 else if(game.typeOfChosingShip==3 && !clicked.checked && clicked.canPutShip&&clicked.material != game.clickedMat&&clicked.hasShip==false){
-                    console.log("trujka")
+                    if(game.mediumShipsLeft!=0){
+                        let field2,field3;
+                        game.mediumShipsLeft -=1;
+                        
+                        ui.updateRaftsLeft()
+                        game.helpArrayForHover = []
+                        if( game.horizontal){
+                            field2 = game.fieldsToChoseObjects.find((element)=>{return element.x == clickedObject.x+1 && element.y == clickedObject.y})
+                            field3 =  game.fieldsToChoseObjects.find((element)=>{return element.x == clickedObject.x+2 && element.y == clickedObject.y})
+                        }else{
+                            field2 = game.fieldsToChoseObjects.find((element)=>{return element.x == clickedObject.x && element.y == clickedObject.y-1})
+                            field3 = game.fieldsToChoseObjects.find((element)=>{return element.x == clickedObject.x && element.y == clickedObject.y-2})
+                        }
+                        clicked.shipType = "3"
+                        field2.shipType = "3"
+                        field3.shipType = "3"
+                        clicked.material = game.clickedMat
+                        field2.material = game.clickedMat
+                        field3.material = game.clickedMat
+                        clicked.hasShip = true;
+                        field2.hasShip = true;
+                        field3.hasShip = true;
+                        clicked.otherBlocks = [field2,field3]
+                        field2.otherBlocks = [clicked,field3]
+                        field3.otherBlocks = [clicked,field2]
+                        field2.checked = true;
+                        field3.checked = true;
+                        clicked.checked = true;
+                        let xs,ys;
+                        if(game.horizontal){
+                            xs =[-1,-1,-1,0,0,1,1,2,2,3,3,3]
+                            ys = [-1,0,1,-1,1,-1,1,-1,1,-1,0,1]
+                        }else{
+                            xs =[-1,0,1,-1,1,-1,1,-1,1,-1,0,1]
+                            ys = [1,1,1,0,0,-1,-1,-2,-2,-3,-3,-3]
+                        }
+                        let temp = []
+                            xs.map((v,i)=>{
+                                obj = game.fieldsToChoseObjects.find((element)=>{return (element.x==clicked.x+xs[i] && element.y==clicked.y+ys[i])})
+                                if(obj!=undefined){
+                                    obj.material = game.cantPlaceMat
+                                    obj.canPutShip = false;
+                                    game.cantPlaceArrayHelp.push(obj)
+                                    temp.push(obj)
+                                }
+                            })
+                        game.cantPlaceArray.push({fieldId: clicked.fieldId, fields: temp})
+                        
+                    }
+                   
                 }
             }
-           
-            
         }
     }
 })
+
+
+
+
+
+//              HOVER - NAJEZDZANIE NA POLA I SIE ZMIENIAJA NA ZIELONE
 window.addEventListener("mousemove", (e) => {
     if(game!=null){
         const raycaster = new THREE.Raycaster();
@@ -317,11 +405,7 @@ window.addEventListener("mousemove", (e) => {
                     case 2:
                         let field0,field1;
                         field0 = game.fieldsToChoseObjects.find((element)=>{return element.x == clickedObject.x && element.y == clickedObject.y})
-                        if(game.horizontal){
-                            field1 = game.fieldsToChoseObjects.find((element)=>{return element.x == clickedObject.x+1 && element.y == clickedObject.y})
-                        }else{
-                            field1 = game.fieldsToChoseObjects.find((element)=>{return element.x == clickedObject.x && element.y == clickedObject.y-1})
-                        }
+                        game.horizontal? field1 = game.fieldsToChoseObjects.find((element)=>{return element.x == clickedObject.x+1 && element.y == clickedObject.y}): field1 = game.fieldsToChoseObjects.find((element)=>{return element.x == clickedObject.x && element.y == clickedObject.y-1})
                         if(field0&&field1&&field0.hasShip == false && field0.canPutShip==true && game.smallShipsLeft!=0 && field1.hasShip == false && field1.canPutShip==true){
                             field0.material = game.hoverMat
                             field1.material = game.hoverMat

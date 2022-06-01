@@ -18,10 +18,10 @@ class Ui {
             document.body.style.background = 'none'
             document.getElementById('placeShips').style.display = 'block'
             socket.emit('loginSuccess', username);
+            game.loadWaitingScreen()
     }
 
     switchStylesBack = () => {
-        console.log("hejho")
         document.getElementsByName('username')[0].style.borderTop = '1px solid rgba(255, 255, 255, 0.5)'
         document.getElementsByName('username')[0].style.borderBottom = '1px solid rgba(255, 255, 255, 0.5)'
         document.getElementsByName('username')[0].style.transform = 'scale(1.0)'
