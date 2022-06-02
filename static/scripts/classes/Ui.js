@@ -18,7 +18,7 @@ class Ui {
             document.body.style.background = 'none'
             document.getElementById('placeShips').style.display = 'block'
             socket.emit('loginSuccess', username);
-            game.loadWaitingScreen()
+            game.pickShips()
     }
 
     switchStylesBack = () => {
