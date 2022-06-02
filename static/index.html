@@ -15,6 +15,7 @@
     <script src="./scripts/classes/Game.js"></script>
     <script src="./scripts/classes/Ui.js"></script>
     <script src="./scripts/main.js"></script>
+    <script src="./scripts/Raycasters.js"></script>
     <link rel="stylesheet" href="./styles/style.css" />
     <link
       href="https://fonts.googleapis.com/css2?family=Berkshire+Swash&display=swap"
@@ -37,12 +38,12 @@
 
     <!-- <button style="position: absolute; z-index: 2; top: 50px; left: 50px;" onclick="animations.sink(game.ships[0])">SINK</button> -->
     <div id="placeShips" style="display: none">
-      <button
+      <!-- <button
         style="position: absolute; z-index: 2; top: 20px; left: 50px"
         onclick="game.loadWaitingScreen()"
       >
         START!
-      </button>
+      </button> -->
       <div id="root"></div>
       <div class="ui-chosing-ships-buttons" id="shipTypeButtons">
         <div class="button" id="" onclick="ui.selectShipType(this,1)">
@@ -64,9 +65,9 @@
       </div>
       <img src="icons/rotate.png" id="rotateInfo"/>
       <h1 class="wait" id="wait">Czekaj na przeciwnika!</h1>
-      <h2 class="shipsLeft" id="shipsLeftBox">
-        Zostało : <span id="shipsLeft"></span>
-      </h2>
+    </div>
+    <div onclick="ui.ready()" id="ready" class="btn-ready">
+        <p >READY</p>
     </div>
 
     <script src="/socket.io/socket.io.js"></script>

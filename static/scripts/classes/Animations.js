@@ -26,14 +26,21 @@ class Animations{
 
     }
     cameraToChoose(camera){
-        let obj = game.scene.position
-        console.log(obj)
         new TWEEN.Tween(camera.position) 
             .to({ x: 2000, y: 450, z: 0 }, 100)
             .repeat(0) 
             .easing(TWEEN.Easing.Exponential.In) 
             .onUpdate()
             .onComplete(()=>{game.generateFieldsToChose(); ui.switchDisplayById("shipTypeButtons","block");})
+            .start()
+    }
+    cameraToGameplay(camera){//x: 1000, y: 450, z: 0
+        new TWEEN.Tween(camera.position) 
+            .to({x: 1000, y: 450, z: 0}, 300)
+            .repeat(0) 
+            .easing(TWEEN.Easing.Exponential.In) 
+            .onUpdate()
+            .onComplete(()=>{game.generateGameplayModels()})
             .start()
     }
 }

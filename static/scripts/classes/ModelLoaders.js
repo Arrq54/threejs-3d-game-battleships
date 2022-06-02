@@ -13,23 +13,25 @@ class ModelLoaders{
             console.error(error);
         });
     }
-    loadRaft(){
+    loadRaft(x,z,rotation){
         const loader = new THREE.GLTFLoader();
-            loader.load('../../models/scene.gltf', function (gltf) {
-                gltf.scene.scale.set(0.1,0.1,0.1)
-                gltf.scene.rotation.y = -Math.PI/2
+            loader.load('../../models/raft/untitled.gltf', function (gltf) {
+                gltf.scene.scale.set(0.175,0.175,0.175)
+                gltf.scene.position.set(x,30,z)
+                gltf.scene.rotation.y = rotation
                 game.scene.add(gltf.scene);
             }, undefined, function (error) {
                 console.error(error);
             });
     }
-    loadSmallShip(){
+    loadSmallShip(x,z,rotation){
         const loader = new THREE.FBXLoader();
         let model;
         loader.load('../../models/smallShip.fbx', function (object) {
             model = object
-            console.log(model)
-            model.scale.set(0.0055,0.0055,0.0055)
+            model.scale.set(0.01,0.01,0.01)
+            model.position.set(x,30,z)
+            model.rotation.y = rotation
             game.scene.add(model)
         });
     }
@@ -38,8 +40,7 @@ class ModelLoaders{
         let model;
         loader.load('../../models/smallShip.fbx', function (object) {
             model = object
-            console.log(model)
-            model.scale.set(0.0075,0.0075,0.0075)
+            model.scale.set(0.0085,0.0085,0.0085)
             model.rotation.y = rotation
             model.position.set(x,y,z)
             game.scene.add(model)
@@ -50,7 +51,6 @@ class ModelLoaders{
         let model;
         loader.load('../../models/largeShip2.fbx', function (object) {
             model = object
-            console.log(model)
             model.scale.set(0.04,0.04,0.04)
             model.position.set(x,y,z)
             model.rotation.y = rotation
@@ -64,31 +64,30 @@ class ModelLoaders{
                 gltf.scene.rotation.y = rotation
                 gltf.scene.position.set(x,y,z)
                 game.scene.add(gltf.scene);
-                console.log("medium idle")
             }, undefined, function (error) {
                 console.error(error);
             });
     }
-    loadMediumShip(){
-        const loader = new THREE.GLTFLoader();
-            loader.load('../../models/mediumShip/scene.gltf', function (gltf) {
-                gltf.scene.scale.set(0.1,0.1,0.1)
-                game.scene.add(gltf.scene);
-                gltf.scene.position.set(0,40,0)
-            }, undefined, function (error) {
-                console.error(error);
-            });
-    }
-    loadLargeShip(){
-        //DODANIE 
+    loadMediumShip(x,z,rotation){
         const loader = new THREE.FBXLoader();
         let model;
         loader.load('../../models/largeShip2.fbx', function (object) {
             model = object
-            console.log(model)
-            model.scale.set(0.04,0.04,0.04)
-            model.rotation.y = Math.PI
+            model.scale.set(0.03,0.03,0.03)
+            model.position.set(x,45,z)
+            model.rotation.y = rotation
             game.scene.add(model)
+        });
+    }
+    loadLargeShip(x,z,rotation){
+        const loader = new THREE.GLTFLoader();
+        loader.load('../../models/mediumShip/scene.gltf', function (gltf) {
+            gltf.scene.scale.set(0.24,0.24,0.24)
+            gltf.scene.position.set(x,42,z)
+            gltf.scene.rotation.y = rotation
+            game.scene.add(gltf.scene);
+        }, undefined, function (error) {
+            console.error(error);
         });
     }
 }

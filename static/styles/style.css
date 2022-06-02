@@ -49,17 +49,6 @@
 #shipTypeButtons {
   display: none;
 }
-.shipsLeft {
-  position: absolute;
-  font-size: 75px;
-  left: 50%;
-  top: 5px;
-  transform: translateX(-50%);
-  color: white;
-}
-#shipsLeftBox {
-  display: none;
-}
 body {
   background: url("../loginBackground.jpg") no-repeat center center fixed;
   -webkit-background-size: cover;
@@ -142,5 +131,30 @@ body {
   position:absolute;
   left:50%;
   transform:translateX(-90%);
-  bottom:5%
+  bottom:5%;
+}
+img{
+  -webkit-user-drag: none;
+}
+.btn-ready{
+  position: absolute;
+  right: 100px;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: white;
+  padding: 10px;
+  border-radius: 9px;
+  width: 150px;
+  text-align: center;
+  border: 1px solid rgb(62, 152, 62);
+  color: rgb(62, 152, 62);
+  transition: 0.4s all ease;
+  cursor: pointer;
+  display: none;
+}
+.btn-ready:hover{
+  transition: 0.4s all ease;
+  border: 1px solid white;
+  color: white;
+  background-color: rgb(62, 152, 62);
 }
