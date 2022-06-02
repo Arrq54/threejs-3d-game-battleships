@@ -11,8 +11,6 @@ const io = new Server(server);
 
 let activeUsers = []
 
-
-
 app.use(express.urlencoded({
     extended: true
 }));

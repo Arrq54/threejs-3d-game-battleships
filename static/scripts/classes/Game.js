@@ -101,7 +101,9 @@
             ui.switchDisplayById("wait","none")
             this.waitForOpponent = false;
         }
+
         generateFieldsToChose(){
+
             this.camera.lookAt(this.camera.position.x,0,this.camera.position.z)
             let shift =2000;
             let fieldId=0;
@@ -150,6 +152,7 @@
     mouseVector.y = -(e.clientY / window.innerHeight) * 2 + 1;
     raycaster.setFromCamera(mouseVector, game.camera);
     const intersects = raycaster.intersectObjects(game.scene.children);
+    console.log(intersects[0].object.position)
     if (intersects.length > 0) {
         let clickedObject = intersects[0].object;
         // console.log(clickedObject)

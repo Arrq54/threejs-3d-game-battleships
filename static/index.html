@@ -38,12 +38,6 @@
     <!-- <button style="position: absolute; z-index: 2; top: 50px; left: 50px;" onclick="animations.sink(game.ships[0])">SINK</button> -->
     <div id="placeShips" style="display: none">
       <button
-        style="position: absolute; z-index: 2; top: 50px; left: 50px"
-        onclick="game.pickShips()"
-      >
-        PLACE YOUR SHIPS!
-      </button>
-      <button
         style="position: absolute; z-index: 2; top: 20px; left: 50px"
         onclick="game.loadWaitingScreen()"
       >
@@ -51,19 +45,24 @@
       </button>
       <div id="root"></div>
       <div class="ui-chosing-ships-buttons" id="shipTypeButtons">
-        <div class="button" onclick="ui.selectShipType(this,1)">
-          <p>Jedynka</p>
+        <div class="button" id="" onclick="ui.selectShipType(this,1)">
+          <img src="./icons/jedynkaButton.png" style="width:100%; height:100%;"/>
+          <p class="remaining" id="r1">4x</p>
         </div>
         <div class="button" onclick="ui.selectShipType(this,2)">
-          <p>Dwójka</p>
+          <img src="./icons/dwujkaButton.png" style="width:100%; height:100%;"/>
+          <p class="remaining" id="r2">3x</p>
         </div>
         <div class="button" onclick="ui.selectShipType(this,3)">
-          <p>Trójka</p>
+          <img src="./icons/trujkaButton.png" style="width:100%; height:100%;"/>
+          <p class="remaining" id="r3">2x</p>
         </div>
         <div class="button" onclick="ui.selectShipType(this,4)">
-          <p>Czwórka</p>
+          <img src="./icons/czwurkaButton.png" style="width:100%; height:100%;"/>
+          <p class="remaining" id="r4">1x</p>
         </div>
       </div>
+      <img src="icons/rotate.png" id="rotateInfo"/>
       <h1 class="wait" id="wait">Czekaj na przeciwnika!</h1>
       <h2 class="shipsLeft" id="shipsLeftBox">
         Zostało : <span id="shipsLeft"></span>

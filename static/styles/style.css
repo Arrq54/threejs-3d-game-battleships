@@ -18,27 +18,33 @@
 .ui-chosing-ships-buttons {
   z-index: 3;
   position: absolute;
-  top: 300px;
-  left: 0;
+  top: 50%;
+  transform:translateY(-50%);
+  left: 200px;
   width: 200px;
   height: 600px;
   padding: 10px;
   text-align: center;
 }
 .button {
+  width:120px;
+  height:120px;
   background-color: rgb(54, 54, 54);
-  padding: 10px;
-  border-radius: 20px;
   color: white;
   cursor: pointer;
-  margin: 20px;
+  margin: 35px;
   transition: 0.3s all ease;
+  border:1px solid black;
+}
+.remaining{
+  font-size:32px;
+  color:'whitesmoke';
+  position:absolute;
+  margin-left:-70px;
+  margin-top:-80px;
 }
 .clicked {
-  padding: 18px;
-  border: 2px solid lime;
-  color: lime;
-  transition: 0.3s all ease;
+  transform:scale(1.2) translateX(20%)
 }
 #shipTypeButtons {
   display: none;
@@ -128,4 +134,13 @@ body {
 }
 #playButton:hover {
   transform: translateX(-50%) scale(1.2);
+}
+
+#rotateInfo{
+  width:100px;
+  height:100px;
+  position:absolute;
+  left:50%;
+  transform:translateX(-90%);
+  bottom:5%
 }
