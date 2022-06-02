@@ -43,26 +43,16 @@ class Ui {
         button.classList.add("clicked")
         this.clickedShipChosingButton = button
         game.typeOfChosingShip = type;
-        this.switchDisplayById("shipsLeftBox", "block")
         this.updateRaftsLeft()
     }
-
     updateRaftsLeft() {
-        switch (game.typeOfChosingShip) {
-            case 1:
-                this.setText("shipsLeft", String(game.raftsLeft))
-                break;
-            case 2:
-                this.setText("shipsLeft", String(game.smallShipsLeft))
-                break;
-            case 3:
-                this.setText("shipsLeft", String(game.mediumShipsLeft))
-                break;
-            case 4:
-                this.setText("shipsLeft", String(game.largeShipsLeft))
-                break;
-            default:
-                break;
-        }
+        this.setText("r1", String(game.raftsLeft)+"x")
+        this.setText("r2", String(game.smallShipsLeft)+"x")
+        this.setText("r3", String(game.mediumShipsLeft)+"x")
+        this.setText("r4", String(game.largeShipsLeft)+"x")
+    }
+    ready(){
+        if(game.raftsLeft!=0 || game.smallShipsLeft!=0 || game.mediumShipsLeft!=0 || game.largeShipsLeft!=0)return;
+        game.gatherInfoAboutShips()
     }
 }
