@@ -10,6 +10,7 @@
     <script src="./libs/three.js"></script>
     <script src="https://threejs.org/examples/js/loaders/FBXLoader.js"></script>
     <script src="https://threejs.org/examples/js/loaders/GLTFLoader.js"></script>
+    <script src="./scripts/classes/InvisibleField.js"></script>
     <script src="./scripts/classes/ModelLoaders.js"></script>
     <script src="./scripts/classes/Animations.js"></script>
     <script src="./scripts/classes/Game.js"></script>
@@ -47,27 +48,39 @@
       <div id="root"></div>
       <div class="ui-chosing-ships-buttons" id="shipTypeButtons">
         <div class="button" id="" onclick="ui.selectShipType(this,1)">
-          <img src="./icons/jedynkaButton.png" style="width:100%; height:100%;"/>
+          <img
+            src="./icons/jedynkaButton.png"
+            style="width: 100%; height: 100%"
+          />
           <p class="remaining" id="r1">4x</p>
         </div>
         <div class="button" onclick="ui.selectShipType(this,2)">
-          <img src="./icons/dwujkaButton.png" style="width:100%; height:100%;"/>
+          <img
+            src="./icons/dwujkaButton.png"
+            style="width: 100%; height: 100%"
+          />
           <p class="remaining" id="r2">3x</p>
         </div>
         <div class="button" onclick="ui.selectShipType(this,3)">
-          <img src="./icons/trujkaButton.png" style="width:100%; height:100%;"/>
+          <img
+            src="./icons/trujkaButton.png"
+            style="width: 100%; height: 100%"
+          />
           <p class="remaining" id="r3">2x</p>
         </div>
         <div class="button" onclick="ui.selectShipType(this,4)">
-          <img src="./icons/czwurkaButton.png" style="width:100%; height:100%;"/>
+          <img
+            src="./icons/czwurkaButton.png"
+            style="width: 100%; height: 100%"
+          />
           <p class="remaining" id="r4">1x</p>
         </div>
       </div>
-      <img src="icons/rotate.png" id="rotateInfo"/>
+      <img src="icons/rotate.png" id="rotateInfo" />
       <h1 class="wait" id="wait">Czekaj na przeciwnika!</h1>
     </div>
     <div onclick="ui.ready()" id="ready" class="btn-ready">
-        <p >READY</p>
+      <p>READY</p>
     </div>
 
     <script src="/socket.io/socket.io.js"></script>
