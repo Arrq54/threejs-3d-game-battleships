@@ -59,6 +59,7 @@ class Game {
             if (data.type == 'answer') this.answerShot(data)
             else if (data.type == 'board') this.answerHit(data)
         })
+        this.shipsObjects3D = []
     }
     answerShot = (data) => {
         let fieldsNextTo = []
@@ -91,7 +92,7 @@ class Game {
 
     setup = () => {
         let loader = new THREE.TextureLoader();
-        this.scene.background = loader.load('../../textures/background2.jpeg');
+        this.scene.background = loader.load('../../textures/backgroundTest.jpg');
         let sandGeometry = new THREE.PlaneGeometry(8000, 8000, 100, 100);
         sandGeometry.rotateX(-Math.PI / 2);
         const vertex = new THREE.Vector3();
@@ -128,6 +129,11 @@ class Game {
         this.loadSunlight()
     }
     loadWaitingScreen() {
+        const color = 0xefece7;  // white
+        const near = 50;
+        const far = 2050;
+        this.scene.fog = new THREE.Fog(color, near, far);
+
         ui.switchDisplayById("wait", "block")
         this.waitForOpponent = true;
         modelLoaders.loadSmallShipIdle(140, 30, 170, Math.PI - 0.5)
@@ -223,6 +229,12 @@ class Game {
         
     }
     generateGameplayModels() {
+        const color = 0xefece7;  // white
+        const near = 50;
+        const far = 2000;
+        this.scene.fog = new THREE.Fog(color, near, far);
+
+
         this.camera.lookAt(1000, 0, 500)
         console.log("renderek bedzie")
         ui.switchDisplayById("shipTypeButtons", "none")
@@ -253,7 +265,11 @@ class Game {
         this.fieldsToChose.map((line, y) => {
             line.map((item, x) => {
                 if (item == 1) {
-                    modelLoaders.loadRaft(1225 - x * 50, 725 - y * 50, raftRandomDirection[Math.floor(Math.random() * raftRandomDirection.length)])
+                    let raft = new Ship("raft",1225 - x * 50,725 - y * 50,raftRandomDirection[Math.floor(Math.random() * raftRandomDirection.length)],[x],[y])
+                    this.scene.add(raft.getObj())
+                    this.shipsObjects3D.push(raft)
+                    console.log(this.shipsObjects3D)
+                    // modelLoaders.loadRaft(1225 - x * 50, 725 - y * 50, raftRandomDirection[Math.floor(Math.random() * raftRandomDirection.length)])
                 } else if (item == 2) {
                     let xs = [-1, 0, 0, 1]
                     let ys = [0, -1, 1, 0]
@@ -265,8 +281,11 @@ class Game {
                                         smallShipsHelpArray.push({ x: x + xs[i], y: y + ys[i] })
                                         let randomOrient;
                                         y + ys[i] == y ? randomOrient = smallShipRandomDirectionHorizontal[Math.floor(Math.random() * smallShipRandomDirectionHorizontal.length)] : randomOrient = smallShipRandomDirectionVertical[Math.floor(Math.random() * smallShipRandomDirectionVertical.length)]
-                                        modelLoaders.loadSmallShip(1225 - ((x + x + xs[i]) / 2) * 50, 725 - ((y + y + ys[i]) / 2) * 50, randomOrient)
-
+                                        // modelLoaders.loadSmallShip(1225 - ((x + x + xs[i]) / 2) * 50, 725 - ((y + y + ys[i]) / 2) * 50, randomOrient)
+                                        let smallShipObject = new Ship("smallShip",1225 - ((x + x + xs[i]) / 2) * 50,725 - ((y + y + ys[i]) / 2) * 50,randomOrient,[x,x + xs[i]],[y,y + ys[i]]) 
+                                        this.scene.add(smallShipObject.getObj())
+                                        this.shipsObjects3D.push(smallShipObject)
+                                        console.log(this.shipsObjects3D);
                                     }
                                 }
                             }
@@ -294,12 +313,17 @@ class Game {
                         let middleElementX = tabOfX.sort()[1]
                         let middleElementY = tabOfY.sort()[1]
                         tabOfY[0] != tabOfY[1] ? randomOrient = mediumShipRandomDirectionVertical[Math.floor(Math.random() * mediumShipRandomDirectionVertical.length)] : randomOrient = mediumShipRandomDirectionHorizontal[Math.floor(Math.random() * mediumShipRandomDirectionHorizontal.length)]
-                        modelLoaders.loadMediumShip(1225 - middleElementX * 50, 725 - middleElementY * 50, randomOrient)
+                        // modelLoaders.loadMediumShip(1225 - middleElementX * 50, 725 - middleElementY * 50, randomOrient)
+                        let mediumShipObject = new Ship("mediumShip",1225 - middleElementX * 50, 725 - middleElementY * 50,randomOrient,tabOfX,tabOfY)
+                        this.scene.add(mediumShipObject.getObj())
+                        this.shipsObjects3D.push(mediumShipObject)
+                        console.log(this.shipsObjects3D);
                     }
                 } else if (item == 4) {
                     let xs = [-3, -2, -1, 0, 0, 0, 0, 0, 0, 1, 2, 3]
                     let ys = [0, 0, 0, -3, -2, -1, 1, 2, 3, 0, 0, 0,]
                     let sumOfX = 0, sumOfY = 0;
+                    let tabOfX = [], tabOfY = [];
                     if (largeShipsHelpArray.filter((element) => { return element.x == x && element.y == y }).length == 0) {
                         sumOfX += x;
                         sumOfY += y;
@@ -310,6 +334,8 @@ class Game {
                                         largeShipsHelpArray.push({ x: x + xs[i], y: y + ys[i] })
                                         sumOfX += x + xs[i]
                                         sumOfY += y + ys[i]
+                                        tabOfX.push(x + xs[i])
+                                        tabOfY.push(y + ys[i])
                                     }
                                 }
                             } 0
@@ -320,7 +346,11 @@ class Game {
                         console.log(avgX)
                         console.log(avgY)
                         avgY != y ? randomOrient = largeShipRandomDirectionVertical[Math.floor(Math.random() * largeShipRandomDirectionVertical.length)] : randomOrient = largeShipRandomDirectionHorizontal[Math.floor(Math.random() * largeShipRandomDirectionHorizontal.length)]
-                        modelLoaders.loadLargeShip(1225 -avgX * 50, 725 - avgY * 50, randomOrient)
+                        // modelLoaders.loadLargeShip(1225 -avgX * 50, 725 - avgY * 50, randomOrient)
+                        let largeShipObject = new Ship("largeShip",1225 - avgX * 50, 725 - avgY * 50,randomOrient,tabOfX,tabOfY)
+                        this.scene.add(largeShipObject.getObj())
+                        this.shipsObjects3D.push(largeShipObject)
+                        console.log(this.shipsObjects3D);
                     }
                 }
             })
@@ -382,8 +412,14 @@ class Game {
         dirLight.shadow.camera.bottom = dirLight.shadow.camera.left = -d;
         dirLight.shadow.camera.near = 1;
         dirLight.shadow.camera.far = 400000000;
-
-
-
+    }
+    sinkAll(){
+        this.shipsObjects3D.map(element=>{
+            sleep(100)
+            element.idleShipAnimation()
+        })
     }
 }
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
