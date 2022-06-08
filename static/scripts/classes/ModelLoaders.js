@@ -7,6 +7,11 @@ class ModelLoaders{
             gltf.scene.scale.set(14,14,14)
             gltf.scene.rotation.y = Math.PI/1.5
             gltf.scene.position.set(0,40,0)
+            gltf.scene.traverse(function (child) {
+                if (child.isMesh) {
+                  child.castShadow = true;
+                }
+             });
             game.scene.add(gltf.scene);
 
         }, undefined, function (error) {
@@ -20,6 +25,11 @@ class ModelLoaders{
                 gltf.scene.position.set(x,30,z)
                 gltf.scene.rotation.y = rotation
                 game.scene.add(gltf.scene);
+                gltf.scene.traverse(function (child) {
+                    if (child.isMesh) {
+                      child.castShadow = true;
+                    }
+                 });
             }, undefined, function (error) {
                 console.error(error);
             });
@@ -31,6 +41,11 @@ class ModelLoaders{
             model = object
             model.scale.set(0.01,0.01,0.01)
             model.position.set(x,30,z)
+            model.traverse(function (child) {
+                if (child.isMesh) {
+                    child.castShadow = true;
+                }
+            })
             model.rotation.y = rotation
             game.scene.add(model)
         });
@@ -42,6 +57,11 @@ class ModelLoaders{
             model = object
             model.scale.set(0.0085,0.0085,0.0085)
             model.rotation.y = rotation
+            model.traverse(function (child) {
+                if (child.isMesh) {
+                    child.castShadow = true;
+                }
+            })
             model.position.set(x,y,z)
             game.scene.add(model)
         })
@@ -54,6 +74,11 @@ class ModelLoaders{
             model.scale.set(0.04,0.04,0.04)
             model.position.set(x,y,z)
             model.rotation.y = rotation
+            model.traverse(function (child) {
+                if (child.isMesh) {
+                    child.castShadow = true;
+                }
+            })
             game.scene.add(model)
         });
     }
@@ -64,6 +89,11 @@ class ModelLoaders{
                 gltf.scene.rotation.y = rotation
                 gltf.scene.position.set(x,y,z)
                 game.scene.add(gltf.scene);
+                gltf.scene.traverse(function (child) {
+                    if (child.isMesh) {
+                      child.castShadow = true;
+                    }
+                 });
             }, undefined, function (error) {
                 console.error(error);
             });
@@ -76,6 +106,11 @@ class ModelLoaders{
             model.scale.set(0.03,0.03,0.03)
             model.position.set(x,45,z)
             model.rotation.y = rotation
+            model.traverse(function (child) {
+                if (child.isMesh) {
+                    child.castShadow = true;
+                }
+            })
             game.scene.add(model)
         });
     }
@@ -86,6 +121,11 @@ class ModelLoaders{
             gltf.scene.position.set(x,42,z)
             gltf.scene.rotation.y = rotation
             game.scene.add(gltf.scene);
+            gltf.scene.traverse(function (child) {
+                if (child.isMesh) {
+                  child.castShadow = true;
+                }
+             });
         }, undefined, function (error) {
             console.error(error);
         });

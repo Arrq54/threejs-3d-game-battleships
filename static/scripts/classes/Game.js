@@ -1,3 +1,4 @@
+
 class Game {
     constructor() {
         this.socket = io()
@@ -9,6 +10,7 @@ class Game {
         this.scene = new THREE.Scene();
         this.camera = new THREE.PerspectiveCamera(45, 16 / 9, 0.1, 10000);
         this.renderer = new THREE.WebGLRenderer();
+        this.renderer.shadowMap.enabled = true;
         this.renderer.setClearColor(0x333333);
         this.renderer.setSize(window.innerWidth, window.innerHeight);
         document.getElementById("root").append(this.renderer.domElement);
@@ -110,18 +112,20 @@ class Game {
             colorsFloor.push(color.r, color.g, color.b);
         }
         sandGeometry.setAttribute('color', new THREE.Float32BufferAttribute(colorsFloor, 3));
-        const sandMaterial = new THREE.MeshBasicMaterial({ vertexColors: true });
+        const sandMaterial = new THREE.MeshPhongMaterial({ vertexColors: true, shininess: 50});
         const sand = new THREE.Mesh(sandGeometry, sandMaterial);
         this.scene.add(sand);
         const waterGeometry = new THREE.PlaneGeometry(7000, 7000, 100, 100);
         waterGeometry.rotateX(Math.PI / 2);
-        const waterMaterial = new THREE.MeshBasicMaterial({ color: 0x46b7e3, side: THREE.DoubleSide, transparent: true, opacity: 0.6 });
+        const waterMaterial = new THREE.MeshPhongMaterial ({ color: 0x46b9e3, side: THREE.DoubleSide, transparent: true, opacity: 0.6, shininess: 50 });
         const water = new THREE.Mesh(waterGeometry, waterMaterial);
+        water.receiveShadow = true;
         water.position.y = 30
         this.scene.add(water);
-        const light = new THREE.AmbientLight(0xffffff, 2);
-        this.scene.add(light);
+        // const light = new THREE.AmbientLight(0xffffff, 2);
+        // this.scene.add(light);
         this.angle = 0
+        this.loadSunlight()
     }
     loadWaitingScreen() {
         ui.switchDisplayById("wait", "block")
@@ -141,6 +145,7 @@ class Game {
         modelLoaders.loadIsland()
         // var audio = new Audio('../../sound/soundtrack/waiting theme.mp3');
         // audio.play();
+     
     }
     pickShips() {
         animations.cameraToChoose(this.camera)
@@ -188,7 +193,7 @@ class Game {
             this.camera.position.y -= 2;
             this.camera.lookAt(this.camera.position.x, 0, 500);
         }
-        if (this.cameraDown && this.camera.position.y < 550) {
+        if (this.cameraDown && this.camera.position.y < 600) {
             this.camera.position.y += 2;
             this.camera.lookAt(this.camera.position.x, 0, 500);
         }
@@ -208,7 +213,14 @@ class Game {
                 this.fieldsToChose[element.y][element.x] = parseInt(element.shipType)
             }
         })
+        let temp = this.fieldsToChose
+        console.log(temp)
+        // this.fieldsToChose.map(arr=>{
+        //     arr.reverse()
+        // })
+        // console.log(this.fieldsToChose)
         animations.cameraToGameplay(this.camera)
+        
     }
     generateGameplayModels() {
         this.camera.lookAt(1000, 0, 500)
@@ -241,7 +253,7 @@ class Game {
         this.fieldsToChose.map((line, y) => {
             line.map((item, x) => {
                 if (item == 1) {
-                    modelLoaders.loadRaft(775 + x * 50, 275 + y * 50, raftRandomDirection[Math.floor(Math.random() * raftRandomDirection.length)])
+                    modelLoaders.loadRaft(1225 - x * 50, 725 - y * 50, raftRandomDirection[Math.floor(Math.random() * raftRandomDirection.length)])
                 } else if (item == 2) {
                     let xs = [-1, 0, 0, 1]
                     let ys = [0, -1, 1, 0]
@@ -253,14 +265,14 @@ class Game {
                                         smallShipsHelpArray.push({ x: x + xs[i], y: y + ys[i] })
                                         let randomOrient;
                                         y + ys[i] == y ? randomOrient = smallShipRandomDirectionHorizontal[Math.floor(Math.random() * smallShipRandomDirectionHorizontal.length)] : randomOrient = smallShipRandomDirectionVertical[Math.floor(Math.random() * smallShipRandomDirectionVertical.length)]
-                                        modelLoaders.loadSmallShip(775 + ((x + x + xs[i]) / 2) * 50, 275 + ((y + y + ys[i]) / 2) * 50, randomOrient)
+                                        modelLoaders.loadSmallShip(1225 - ((x + x + xs[i]) / 2) * 50, 725 - ((y + y + ys[i]) / 2) * 50, randomOrient)
 
                                     }
                                 }
                             }
                         })
                     }
-                } else if (item == 3) {
+                } else if (item == 3 || item==9) {
                     let xs = [-2, -1, 0, 0, 0, 0, 1, 2]
                     let ys = [0, 0, -2, -1, 1, 2, 0, 0]
                     let tabOfX = [], tabOfY = [];
@@ -270,7 +282,7 @@ class Game {
                         xs.map((element, i) => {
                             if (this.fieldsToChose[y + ys[i]] != undefined) {
                                 if (this.fieldsToChose[y + ys[i]][x + xs[i]] != undefined) {
-                                    if (this.fieldsToChose[y + ys[i]][x + xs[i]] == 3) {
+                                    if (this.fieldsToChose[y + ys[i]][x + xs[i]] == item) {
                                         mediumShipsHelpArray.push({ x: x + xs[i], y: y + ys[i] })
                                         tabOfX.push(x + xs[i])
                                         tabOfY.push(y + ys[i])
@@ -282,7 +294,7 @@ class Game {
                         let middleElementX = tabOfX.sort()[1]
                         let middleElementY = tabOfY.sort()[1]
                         tabOfY[0] != tabOfY[1] ? randomOrient = mediumShipRandomDirectionVertical[Math.floor(Math.random() * mediumShipRandomDirectionVertical.length)] : randomOrient = mediumShipRandomDirectionHorizontal[Math.floor(Math.random() * mediumShipRandomDirectionHorizontal.length)]
-                        modelLoaders.loadMediumShip(775 + middleElementX * 50, 275 + middleElementY * 50, randomOrient)
+                        modelLoaders.loadMediumShip(1225 - middleElementX * 50, 725 - middleElementY * 50, randomOrient)
                     }
                 } else if (item == 4) {
                     let xs = [-3, -2, -1, 0, 0, 0, 0, 0, 0, 1, 2, 3]
@@ -308,7 +320,7 @@ class Game {
                         console.log(avgX)
                         console.log(avgY)
                         avgY != y ? randomOrient = largeShipRandomDirectionVertical[Math.floor(Math.random() * largeShipRandomDirectionVertical.length)] : randomOrient = largeShipRandomDirectionHorizontal[Math.floor(Math.random() * largeShipRandomDirectionHorizontal.length)]
-                        modelLoaders.loadLargeShip(775 + avgX * 50, 275 + avgY * 50, randomOrient)
+                        modelLoaders.loadLargeShip(1225 -avgX * 50, 725 - avgY * 50, randomOrient)
                     }
                 }
             })
@@ -346,5 +358,32 @@ class Game {
         cube.position.set(x, 27, z)
         cube.rotation.y = rotation
         this.scene.add(cube);
+    }
+    loadSunlight(){
+        var hemiLight = new THREE.HemisphereLight( 0xffffff, 0xc46c08, 0.6 );
+        // hemiLight.color.setHSL( 0.6, 0.75, 0.5 );
+        hemiLight.groundColor.setHSL( 0.095, 0.5, 0.5 );
+        hemiLight.position.set( 1000, 500, 500 );
+        hemiLight.intensity = 1
+        this.scene.add( hemiLight );
+        var dirLight = new THREE.DirectionalLight( 0xc46c08, 1);
+        dirLight.position.set( 950, 350, 500 );
+        dirLight.position.multiplyScalar( 150);
+        this.scene.add( dirLight );
+        dirLight.castShadow = true;
+        let d = 1000;
+        let r = 2;
+        let mapSize = 8192;
+        dirLight.castShadow = true;
+        dirLight.shadow.radius = r;
+        dirLight.shadow.mapSize.width = mapSize;
+        dirLight.shadow.mapSize.height = mapSize;
+        dirLight.shadow.camera.top = dirLight.shadow.camera.right = d;
+        dirLight.shadow.camera.bottom = dirLight.shadow.camera.left = -d;
+        dirLight.shadow.camera.near = 1;
+        dirLight.shadow.camera.far = 400000000;
+
+
+
     }
 }

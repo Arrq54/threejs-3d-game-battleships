@@ -73,8 +73,8 @@ window.addEventListener("mousedown", (e) => {
                     }
 
                 }
-                else if (clicked.shipType == "3" || clicked.shipType == "4") {
-                    clicked.shipType == "3" ? game.mediumShipsLeft += 1 : game.largeShipsLeft += 1;
+                else if (clicked.shipType == "3" || clicked.shipType == "4"|| clicked.shipType == "9") {
+                    (clicked.shipType == "3" || clicked.shipType=="9") ? game.mediumShipsLeft += 1 : game.largeShipsLeft += 1;
 
                     ui.updateRaftsLeft()
                     clicked.material = game.notClickedMat
@@ -202,6 +202,12 @@ window.addEventListener("mousedown", (e) => {
                                 clicked.shipType = "3"
                                 field2.shipType = "3"
                                 field3.shipType = "3"
+                                if(game.mediumShipsLeft==1){
+                                    clicked.shipType = "9"
+                                    field2.shipType = "9"
+                                    field3.shipType = "9"
+                                }
+                                
                                 clicked.material = game.clickedMat
                                 field2.material = game.clickedMat
                                 field3.material = game.clickedMat
