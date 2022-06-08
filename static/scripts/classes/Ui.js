@@ -55,6 +55,7 @@ class Ui {
         this.socket.emit('loginSuccess', username);
         sessionStorage.setItem('username', username);
         game.pickShips()
+        // game.loadWaitingScreen()
     }
 
     switchStylesBack = () => {

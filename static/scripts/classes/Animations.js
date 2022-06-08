@@ -43,4 +43,13 @@ class Animations{
             .onComplete(()=>{game.generateGameplayModels()})
             .start()
     }
+    cameraToOpponent(){
+        new TWEEN.Tween(game.camera.position) 
+        .to({x: 300, y: 450, z: 0}, 1250)
+        .repeat(0) 
+        .easing(TWEEN.Easing.Cubic.Out) 
+        .onUpdate()
+        .onComplete()
+        .start()
+    }
 }
