@@ -59,7 +59,9 @@ class Game {
             if (data.type == 'answer') this.answerShot(data)
             else if (data.type == 'board') this.answerHit(data)
         })
-        this.shipsObjects3D = []
+        this.shipsObjects3D = [];
+        this.objectToExplode;
+        this.explode = false;
     }
     answerShot = (data) => {
         let fieldsNextTo = []
@@ -84,10 +86,13 @@ class Game {
     }
 
     answerHit = (data) => {
+        console.log(data)
         this.fieldsToChose = data.board
         let field = this.allyFields.find(item => item.x == data.cordinates.x && item.y == data.cordinates.y)
         field.changeMaterial(new THREE.MeshBasicMaterial({ transparent: true, map: new THREE.TextureLoader().load('../../textures/cantPlaceTransparent.png') }))
         field.gotShot()
+        data.answer=="hit"?animations.canonBall(field.position.x,field.position.z,0.0555,0.6,0.29):animations.canonBall(field.position.x,field.position.z,0.316,0.53,0.73)
+        
     }
 
     setup = () => {
@@ -208,6 +213,16 @@ class Game {
             this.camera.position.x = 600 * Math.sin(this.angle);
             this.camera.lookAt(0, 150, 0)
             this.angle += 0.005
+        }
+        if(this.explode){
+            uniforms.amplitude.value +=1.0;
+            if(uniforms.amplitude.value==50){
+                this.explode=false;
+                sleep(100)
+                this.objectToExplode.parent.remove(this.objectToExplode)
+                this.objectToExplode = null;
+                uniforms.amplitude.value = 0;
+            }
         }
         requestAnimationFrame(this.render);
         TWEEN.update();
@@ -420,6 +435,10 @@ class Game {
         })
     }
 }
-function sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
+function sleep(milliseconds) {
+    const date = Date.now();
+    let currentDate = null;
+    do {
+      currentDate = Date.now();
+    } while (currentDate - date < milliseconds);
   }

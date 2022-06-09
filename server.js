@@ -18,15 +18,12 @@ app.get('/', function (req, res) {
     res.sendFile(__dirname + "/static/index.html")
 })
 io.on('connection', (socket) => {
-
     io.emit('test', "socket io dziala");
-
     socket.on('loginSuccess', (username) => {
         if (activeUsers.length < 2)
             activeUsers.push(username)
         console.log(activeUsers)
     })
-
     socket.on('shipsReady', (data) => {
         const index = activeUsers.indexOf(data.username)
         if (index == -1)
@@ -36,7 +33,6 @@ io.on('connection', (socket) => {
             activeUsers.push(data)
         }
     })
-
     socket.on('shot', (data) => {
         let playerToGetShot = activeUsers.find(item => item.username != data.from)
         let answer;
@@ -46,11 +42,7 @@ io.on('connection', (socket) => {
             hitShip = playerToGetShot.board[data.y][data.x]
         }
         else answer = 'miss'
-
-
         playerToGetShot.board[data.y][data.x] = 'X'
-
-
         let destroyed = false;
         if (hitShip == 1) destroyed = true
 
@@ -62,7 +54,8 @@ io.on('connection', (socket) => {
                 cordinates: {
                     x: data.x,
                     y: data.y
-                }
+                },
+                answer: answer
             },
             {
                 for: data.from,
@@ -76,7 +69,6 @@ io.on('connection', (socket) => {
             }
         ]
         io.emit('shotAnswer', dataResponse)
-
     })
 });
 
