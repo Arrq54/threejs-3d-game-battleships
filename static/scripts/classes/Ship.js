@@ -8,9 +8,11 @@ class Ship extends THREE.Mesh {
         this.obj.rotation.y = rotation
         this.name = type
         this.distance = 0;
+        this.shakeAngle = 0;
         switch(type){
             case "raft":
                 this.distance = 1
+                this.shakeAngle = Math.PI/20
                 this.obj.position.set(posX,30,posZ)
                 const loader = new THREE.GLTFLoader();
                 loader.load('../../models/raft/untitled.gltf', function (gltf) {
@@ -30,6 +32,7 @@ class Ship extends THREE.Mesh {
                 this.obj.position.set(posX,30,posZ)
                 const smallShipLoader = new THREE.FBXLoader();
                 this.distance = 3
+                this.shakeAngle = Math.PI/10
                 smallShipLoader.load('../../models/smallShip.fbx', function (object) {
                     let model = object
                     model.scale.set(0.01,0.01,0.01)
@@ -45,6 +48,7 @@ class Ship extends THREE.Mesh {
             case "mediumShip":
                 this.obj.position.set(posX,45,posZ)
                 this.distance = 5
+                this.shakeAngle = Math.PI/15
                 const mediumShipLoader = new THREE.FBXLoader();
                 let model;
                 mediumShipLoader.load('../../models/largeShip2.fbx', function (object) {
@@ -61,6 +65,7 @@ class Ship extends THREE.Mesh {
             case "largeShip":
                 this.obj.position.set(posX,42,posZ)
                 this.distance = 8
+                this.shakeAngle = Math.PI/36
                 const largeShipLoader = new THREE.GLTFLoader();
                 largeShipLoader.load('../../models/mediumShip/scene.gltf', function (gltf) {
                     gltf.scene.scale.set(0.24,0.24,0.24)
@@ -115,6 +120,23 @@ class Ship extends THREE.Mesh {
             .onUpdate()
             .onComplete(()=>this.idleShipAnimation())
             .start()
+        })
+        .start()
+    }//Math.PI/36
+    shake(){
+        new TWEEN.Tween(this.obj.rotation) 
+        .to({x: this.obj.rotation.x+this.shakeAngle,y: this.obj.rotation.y, z: this.obj.rotation.z}, 500)
+        .repeat(0) 
+        .easing(TWEEN.Easing.Quadratic.InOut) 
+        .onUpdate()
+        .onComplete(()=>{
+            new TWEEN.Tween(this.obj.rotation) 
+                .to({x: this.obj.rotation.x-this.shakeAngle,y: this.obj.rotation.y, z: this.obj.rotation.z}, 750)
+                .repeat(0) 
+                .easing(TWEEN.Easing.Quadratic.InOut) 
+                .onUpdate()
+                .onComplete()
+                .start()
         })
         .start()
     }
