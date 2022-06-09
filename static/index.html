@@ -10,8 +10,11 @@
     <script src="./libs/three.js"></script>
     <script src="https://threejs.org/examples/js/loaders/FBXLoader.js"></script>
     <script src="https://threejs.org/examples/js/loaders/GLTFLoader.js"></script>
+    <script src="https://threejs.org/examples/js/modifiers/TessellateModifier.js"></script>
+    <script src=""></script>
     <script src="./scripts/classes/InvisibleField.js"></script>
     <script src="./scripts/classes/ModelLoaders.js"></script>
+    <script src="./scripts/shaders.js"></script>
     <script src="./scripts/classes/Animations.js"></script>
     <script src="./scripts/classes/Ship.js"></script>
     <script src="./scripts/classes/Game.js"></script>
@@ -38,7 +41,8 @@
       <img id="skull" src="./czacha.png" />
     </div>
 
-    <button style="position: absolute; z-index: 2; top: 50px; left: 50px;" onclick="game.sinkAll()">ANIMACJA GÓRA DÓŁ</button>
+    <!-- <button style="position: absolute; z-index: 2; top: 50px; left: 50px;" onclick="game.sinkAll()">ANIMACJA GÓRA DÓŁ</button> -->
+    <button style="position: absolute; z-index: 2; top: 50px; left: 50px;" onclick="animations.canonBall(1000,500)">KULA</button>
     <div id="placeShips" style="display: none">
       <!-- <button
         style="position: absolute; z-index: 2; top: 20px; left: 50px"
