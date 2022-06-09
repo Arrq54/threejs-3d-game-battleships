@@ -91,8 +91,7 @@ class Game {
         let field = this.allyFields.find(item => item.x == data.cordinates.x && item.y == data.cordinates.y)
         field.changeMaterial(new THREE.MeshBasicMaterial({ transparent: true, map: new THREE.TextureLoader().load('../../textures/cantPlaceTransparent.png') }))
         field.gotShot()
-        data.answer=="hit"?animations.canonBall(field.position.x,field.position.z,0.0555,0.6,0.29):animations.canonBall(field.position.x,field.position.z,0.316,0.53,0.73)
-        
+        data.answer=="hit"?animations.cannonBall(field.position.x,field.position.z,0.0555,0.6,0.29,field):animations.cannonBall(field.position.x,field.position.z,0.316,0.53,0.73,field)
     }
 
     setup = () => {
@@ -283,7 +282,6 @@ class Game {
                     let raft = new Ship("raft",1225 - x * 50,725 - y * 50,raftRandomDirection[Math.floor(Math.random() * raftRandomDirection.length)],[x],[y])
                     this.scene.add(raft.getObj())
                     this.shipsObjects3D.push(raft)
-                    console.log(this.shipsObjects3D)
                     // modelLoaders.loadRaft(1225 - x * 50, 725 - y * 50, raftRandomDirection[Math.floor(Math.random() * raftRandomDirection.length)])
                 } else if (item == 2) {
                     let xs = [-1, 0, 0, 1]
@@ -300,7 +298,6 @@ class Game {
                                         let smallShipObject = new Ship("smallShip",1225 - ((x + x + xs[i]) / 2) * 50,725 - ((y + y + ys[i]) / 2) * 50,randomOrient,[x,x + xs[i]],[y,y + ys[i]]) 
                                         this.scene.add(smallShipObject.getObj())
                                         this.shipsObjects3D.push(smallShipObject)
-                                        console.log(this.shipsObjects3D);
                                     }
                                 }
                             }
@@ -332,7 +329,6 @@ class Game {
                         let mediumShipObject = new Ship("mediumShip",1225 - middleElementX * 50, 725 - middleElementY * 50,randomOrient,tabOfX,tabOfY)
                         this.scene.add(mediumShipObject.getObj())
                         this.shipsObjects3D.push(mediumShipObject)
-                        console.log(this.shipsObjects3D);
                     }
                 } else if (item == 4) {
                     let xs = [-3, -2, -1, 0, 0, 0, 0, 0, 0, 1, 2, 3]
@@ -365,7 +361,6 @@ class Game {
                         let largeShipObject = new Ship("largeShip",1225 - avgX * 50, 725 - avgY * 50,randomOrient,tabOfX,tabOfY)
                         this.scene.add(largeShipObject.getObj())
                         this.shipsObjects3D.push(largeShipObject)
-                        console.log(this.shipsObjects3D);
                     }
                 }
             })

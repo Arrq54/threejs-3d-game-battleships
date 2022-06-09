@@ -53,7 +53,7 @@ class Animations{
         .onComplete()
         .start()
     }
-    canonBall(x,z,h,s,l){
+    cannonBall(x,z,h,s,l,field){
         var audio = new Audio('../../sound/effects/canonFire.mp3');
         audio.play();
         let ballgeometry = new THREE.SphereGeometry( 4, 32, 32 );
@@ -109,11 +109,15 @@ class Animations{
                 var audio = new Audio('../../sound/effects/hitWater.mp3');
                 audio.play();
            }
+           game.shipsObjects3D.map((ship)=>{
+            ship.x.map((element,i)=>{
+                if(element==field.x && ship.y[i]==field.y)
+                {
+                    ship.shake()
+                }
+            })
+        })
         })
         .start()
-        
-
-        
-        
     }
 }
