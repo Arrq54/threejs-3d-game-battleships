@@ -7,6 +7,7 @@ app.use(express.json());
 const http = require('http');
 const server = http.createServer(app);
 const { Server } = require("socket.io");
+const destroy = require("destroy");
 const io = new Server(server);
 
 let activeUsers = []
@@ -22,7 +23,6 @@ io.on('connection', (socket) => {
     socket.on('loginSuccess', (username) => {
         if (activeUsers.length < 2)
             activeUsers.push(username)
-        console.log(activeUsers)
     })
     socket.on('shipsReady', (data) => {
         const index = activeUsers.indexOf(data.username)
@@ -31,6 +31,12 @@ io.on('connection', (socket) => {
         else {
             activeUsers.splice(index, 1)
             activeUsers.push(data)
+        }
+        if (!activeUsers.some(item => typeof (item) == 'string') && activeUsers.length == 2) {
+            console.log("STARTING")
+            io.emit('gameStart', {
+                turn: activeUsers[Math.round(Math.random())]
+            })
         }
     })
     socket.on('shot', (data) => {
@@ -45,7 +51,39 @@ io.on('connection', (socket) => {
         playerToGetShot.board[data.y][data.x] = 'X'
         let destroyed = false;
         if (hitShip == 1) destroyed = true
-
+        else if (hitShip == 4) {
+            let sum = 0
+            playerToGetShot.board.forEach(item => {
+                item.forEach(element => {
+                    if (element == 4) sum++
+                })
+            })
+            if (sum == 0) destroyed = true
+        }
+        else if (hitShip == 3) {
+            let sum = 0
+            playerToGetShot.board.forEach(item => {
+                item.forEach(element => {
+                    if (element == 3) sum++
+                })
+            })
+            if (sum == 0) destroyed = true
+        }
+        else if (hitShip == 9) {
+            let sum = 0
+            playerToGetShot.board.forEach(item => {
+                item.forEach(element => {
+                    if (element == 9) sum++
+                })
+            })
+            if (sum == 0) destroyed = true
+        }
+        else if (hitShip == 2) {
+            if (playerToGetShot.board[data.y - 1][data.x] != 2 &&
+                playerToGetShot.board[data.y + 1][data.x] != 2 &&
+                playerToGetShot.board[data.y][data.x + 1] != 2 &&
+                playerToGetShot.board[data.y][data.x - 1] != 2) destroyed = true
+        }
         let dataResponse = [
             {
                 for: playerToGetShot.username,
@@ -55,7 +93,9 @@ io.on('connection', (socket) => {
                     x: data.x,
                     y: data.y
                 },
-                answer: answer
+                answer: answer,
+                destroyed: destroyed,
+                ship: hitShip
             },
             {
                 for: data.from,
@@ -65,10 +105,16 @@ io.on('connection', (socket) => {
                     x: data.x,
                     y: data.y
                 },
-                destroyed: destroyed
+                destroyed: destroyed,
+                ship: hitShip
             }
         ]
         io.emit('shotAnswer', dataResponse)
+        let winCondition = true;
+        playerToGetShot.board.forEach(item => {
+            if (item.some(element => element != "X" && element != 0)) winCondition = false
+        })
+        if (winCondition) io.emit('gameEnd', { winner: data.from })
     })
 });
 

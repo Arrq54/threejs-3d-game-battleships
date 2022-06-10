@@ -59,39 +59,75 @@ class Game {
             if (data.type == 'answer') this.answerShot(data)
             else if (data.type == 'board') this.answerHit(data)
         })
+        this.socket.on('gameStart', (data) => {
+            (data.turn == sessionStorage.getItem('username') || data.turn.username == sessionStorage.getItem('username')) ? this.yourTurn = true : this.yourTurn = false
+            if (this.yourTurn) animations.cameraToOpponent()
+            console.log("START")
+            //HIDE LOADING SCREEN, LOAD BOARD & MODELS
+        })
+        this.socket.on('gameEnd', (data) => {
+            if (data.winner == sessionStorage.getItem('username')) this.win()
+            else this.lose()
+        })
         this.shipsObjects3D = [];
         this.objectToExplode;
         this.explode = false;
+        this.yourTurn = null
     }
-    answerShot = (data) => {
-        let fieldsNextTo = []
+    win = async () => {
+        await new Promise(r => setTimeout(r, 500));
+        alert('wygrałes')
+    }
+    lose = async () => {
+        await new Promise(r => setTimeout(r, 500));
+        alert('ssiesz chuja gosciu')
+    }
+    answerShot = async (data) => {
+        await new Promise(r => setTimeout(r, 250));
         let field = this.opponentFields.find(item => item.x == data.cordinates.x && item.y == data.cordinates.y)
-        if (data.answer == 'miss')
+        if (data.answer == 'miss') {
             field.changeMaterial(new THREE.MeshBasicMaterial({ transparent: true, map: new THREE.TextureLoader().load('../../textures/cantPlaceTransparent.png') }))
+            this.popUp('Miss!')
+        }
         else if (data.answer == 'hit') {
+            (data.destroyed) ? this.popUp('Sunk!') : this.popUp('Hit!')
             field.changeMaterial(new THREE.MeshBasicMaterial({ transparent: true, map: new THREE.TextureLoader().load('../../textures/hit.png') }))
-            fieldsNextTo.push(this.opponentFields.find(item => item.x == data.cordinates.x + 1 && item.y == data.cordinates.y + 1))
-            fieldsNextTo.push(this.opponentFields.find(item => item.x == data.cordinates.x + 1 && item.y == data.cordinates.y - 1))
-            fieldsNextTo.push(this.opponentFields.find(item => item.x == data.cordinates.x - 1 && item.y == data.cordinates.y + 1))
-            fieldsNextTo.push(this.opponentFields.find(item => item.x == data.cordinates.x - 1 && item.y == data.cordinates.y - 1))
-            fieldsNextTo.forEach(item => {
-                if (item != null && item != undefined) {
-                    item.changeMaterial(new THREE.MeshBasicMaterial({ transparent: true, map: new THREE.TextureLoader().load('../../textures/cantPlaceTransparent.png') }))
-                    item.gotShot()
-                }
-            })
+        }
+        if (data.destroyed) {
+            if (data.ship == 1) {
+                this.opponentFields.forEach(item => {
+                    for (let i = -1; i < 2; i++) {
+                        if (Math.abs(item.x - data.cordinates.x) < 2 && item.y == data.cordinates.y + i && data.cordinates.y >= 1
+                            && !(item.x == data.cordinates.x && item.y == data.cordinates.y)) {
+                            item.changeMaterial(new THREE.MeshBasicMaterial({ transparent: true, map: new THREE.TextureLoader().load('../../textures/cantPlaceTransparent.png') }))
+                            item.gotShot()
+                        }
+                    }
+                })
+            }
         }
         field.gotShot()
-
     }
 
+    changeTurn = async () => {
+        this.yourTurn = !this.yourTurn
+        await new Promise(r => setTimeout(r, 2500));
+        if (this.yourTurn) animations.cameraToOpponent()
+        else animations.cameraToGameplaySlow()
+    }
+
+
     answerHit = (data) => {
-        console.log(data)
+        this.changeTurn()
         this.fieldsToChose = data.board
         let field = this.allyFields.find(item => item.x == data.cordinates.x && item.y == data.cordinates.y)
         field.changeMaterial(new THREE.MeshBasicMaterial({ transparent: true, map: new THREE.TextureLoader().load('../../textures/cantPlaceTransparent.png') }))
         field.gotShot()
-        data.answer=="hit"?animations.cannonBall(field.position.x,field.position.z,0.0555,0.6,0.29,field):animations.cannonBall(field.position.x,field.position.z,0.316,0.53,0.73,field)
+        data.answer == "hit" ? animations.cannonBall(field.position.x, field.position.z, 0.0555, 0.6, 0.29, field) : animations.cannonBall(field.position.x, field.position.z, 0.316, 0.53, 0.73, field)
+    }
+
+    popUp = (msg) => {
+        console.log('dynamic popup here')
     }
 
     setup = () => {
@@ -117,12 +153,12 @@ class Game {
             colorsFloor.push(color.r, color.g, color.b);
         }
         sandGeometry.setAttribute('color', new THREE.Float32BufferAttribute(colorsFloor, 3));
-        const sandMaterial = new THREE.MeshPhongMaterial({ vertexColors: true, shininess: 50});
+        const sandMaterial = new THREE.MeshPhongMaterial({ vertexColors: true, shininess: 50 });
         const sand = new THREE.Mesh(sandGeometry, sandMaterial);
         this.scene.add(sand);
         const waterGeometry = new THREE.PlaneGeometry(7000, 7000, 100, 100);
         waterGeometry.rotateX(Math.PI / 2);
-        const waterMaterial = new THREE.MeshPhongMaterial ({ color: 0x46b9e3, side: THREE.DoubleSide, transparent: true, opacity: 0.6, shininess: 50 });
+        const waterMaterial = new THREE.MeshPhongMaterial({ color: 0x46b9e3, side: THREE.DoubleSide, transparent: true, opacity: 0.6, shininess: 50 });
         const water = new THREE.Mesh(waterGeometry, waterMaterial);
         water.receiveShadow = true;
         water.position.y = 30
@@ -155,7 +191,7 @@ class Game {
         modelLoaders.loadIsland()
         // var audio = new Audio('../../sound/soundtrack/waiting theme.mp3');
         // audio.play();
-     
+
     }
     pickShips() {
         animations.cameraToChoose(this.camera)
@@ -213,10 +249,10 @@ class Game {
             this.camera.lookAt(0, 150, 0)
             this.angle += 0.005
         }
-        if(this.explode){
-            uniforms.amplitude.value +=1.0;
-            if(uniforms.amplitude.value==50){
-                this.explode=false;
+        if (this.explode) {
+            uniforms.amplitude.value += 1.0;
+            if (uniforms.amplitude.value == 50) {
+                this.explode = false;
                 sleep(100)
                 this.objectToExplode.parent.remove(this.objectToExplode)
                 this.objectToExplode = null;
@@ -234,13 +270,8 @@ class Game {
             }
         })
         let temp = this.fieldsToChose
-        console.log(temp)
-        // this.fieldsToChose.map(arr=>{
-        //     arr.reverse()
-        // })
-        // console.log(this.fieldsToChose)
         animations.cameraToGameplay(this.camera)
-        
+
     }
     generateGameplayModels() {
         const color = 0xefece7;  // white
@@ -250,7 +281,6 @@ class Game {
 
 
         this.camera.lookAt(1000, 0, 500)
-        console.log("renderek bedzie")
         ui.switchDisplayById("shipTypeButtons", "none")
         ui.switchDisplayById("ready", "none")
         ui.switchDisplayById("rotateInfo", "none")
@@ -264,6 +294,8 @@ class Game {
         this.generateOpponentsBoard(xs, zs)
 
         //GENEROWANIE MODELI STATKOW NA PODSTAWIE TABELI WYBRANYCH PÓL
+
+        console.log("GENEROWANIE STATKOW")
 
         let raftRandomDirection = [Math.PI, -Math.PI, Math.PI / 2]
         let smallShipRandomDirectionHorizontal = [Math.PI / 2, -Math.PI / 2]
@@ -279,7 +311,7 @@ class Game {
         this.fieldsToChose.map((line, y) => {
             line.map((item, x) => {
                 if (item == 1) {
-                    let raft = new Ship("raft",1225 - x * 50,725 - y * 50,raftRandomDirection[Math.floor(Math.random() * raftRandomDirection.length)],[x],[y])
+                    let raft = new Ship("raft", 1225 - x * 50, 725 - y * 50, raftRandomDirection[Math.floor(Math.random() * raftRandomDirection.length)], [x], [y])
                     this.scene.add(raft.getObj())
                     this.shipsObjects3D.push(raft)
                     // modelLoaders.loadRaft(1225 - x * 50, 725 - y * 50, raftRandomDirection[Math.floor(Math.random() * raftRandomDirection.length)])
@@ -295,7 +327,7 @@ class Game {
                                         let randomOrient;
                                         y + ys[i] == y ? randomOrient = smallShipRandomDirectionHorizontal[Math.floor(Math.random() * smallShipRandomDirectionHorizontal.length)] : randomOrient = smallShipRandomDirectionVertical[Math.floor(Math.random() * smallShipRandomDirectionVertical.length)]
                                         // modelLoaders.loadSmallShip(1225 - ((x + x + xs[i]) / 2) * 50, 725 - ((y + y + ys[i]) / 2) * 50, randomOrient)
-                                        let smallShipObject = new Ship("smallShip",1225 - ((x + x + xs[i]) / 2) * 50,725 - ((y + y + ys[i]) / 2) * 50,randomOrient,[x,x + xs[i]],[y,y + ys[i]]) 
+                                        let smallShipObject = new Ship("smallShip", 1225 - ((x + x + xs[i]) / 2) * 50, 725 - ((y + y + ys[i]) / 2) * 50, randomOrient, [x, x + xs[i]], [y, y + ys[i]])
                                         this.scene.add(smallShipObject.getObj())
                                         this.shipsObjects3D.push(smallShipObject)
                                     }
@@ -303,7 +335,7 @@ class Game {
                             }
                         })
                     }
-                } else if (item == 3 || item==9) {
+                } else if (item == 3 || item == 9) {
                     let xs = [-2, -1, 0, 0, 0, 0, 1, 2]
                     let ys = [0, 0, -2, -1, 1, 2, 0, 0]
                     let tabOfX = [], tabOfY = [];
@@ -326,7 +358,7 @@ class Game {
                         let middleElementY = tabOfY.sort()[1]
                         tabOfY[0] != tabOfY[1] ? randomOrient = mediumShipRandomDirectionVertical[Math.floor(Math.random() * mediumShipRandomDirectionVertical.length)] : randomOrient = mediumShipRandomDirectionHorizontal[Math.floor(Math.random() * mediumShipRandomDirectionHorizontal.length)]
                         // modelLoaders.loadMediumShip(1225 - middleElementX * 50, 725 - middleElementY * 50, randomOrient)
-                        let mediumShipObject = new Ship("mediumShip",1225 - middleElementX * 50, 725 - middleElementY * 50,randomOrient,tabOfX,tabOfY)
+                        let mediumShipObject = new Ship("mediumShip", 1225 - middleElementX * 50, 725 - middleElementY * 50, randomOrient, tabOfX, tabOfY)
                         this.scene.add(mediumShipObject.getObj())
                         this.shipsObjects3D.push(mediumShipObject)
                     }
@@ -358,7 +390,7 @@ class Game {
                         console.log(avgY)
                         avgY != y ? randomOrient = largeShipRandomDirectionVertical[Math.floor(Math.random() * largeShipRandomDirectionVertical.length)] : randomOrient = largeShipRandomDirectionHorizontal[Math.floor(Math.random() * largeShipRandomDirectionHorizontal.length)]
                         // modelLoaders.loadLargeShip(1225 -avgX * 50, 725 - avgY * 50, randomOrient)
-                        let largeShipObject = new Ship("largeShip",1225 - avgX * 50, 725 - avgY * 50,randomOrient,tabOfX,tabOfY)
+                        let largeShipObject = new Ship("largeShip", 1225 - avgX * 50, 725 - avgY * 50, randomOrient, tabOfX, tabOfY)
                         this.scene.add(largeShipObject.getObj())
                         this.shipsObjects3D.push(largeShipObject)
                     }
@@ -368,7 +400,7 @@ class Game {
 
     }
     generateOpponentsBoard = (xs, zs) => {
-        let xs2 = xs.map(item => item - 700)
+        let xs2 = xs.map(item => item - 900)
         let rotations2 = [Math.PI / 2, Math.PI / 2, Math.PI / 2, Math.PI / 2, Math.PI / 2, Math.PI / 2, Math.PI / 2, Math.PI / 2, Math.PI / 2, Math.PI / 2, Math.PI / 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
         xs2.map((e, i) => {
             this.addTableLine(xs2[i], zs[i], rotations2[i])
@@ -380,7 +412,7 @@ class Game {
         for (let i = 0; i < 10; i++)
             for (let j = 0; j < 10; j++) {
                 let field = new InvisibleField(geometry, material, i, j, 'invisibleFieldOpp')
-                field.position.set(525 - i * 50, 27, 725 - j * 50)
+                field.position.set(325 - i * 50, 27, 725 - j * 50)
                 this.scene.add(field)
                 this.opponentFields.push(field)
             }
@@ -399,17 +431,17 @@ class Game {
         cube.rotation.y = rotation
         this.scene.add(cube);
     }
-    loadSunlight(){
-        var hemiLight = new THREE.HemisphereLight( 0xffffff, 0xc46c08, 0.6 );
+    loadSunlight() {
+        var hemiLight = new THREE.HemisphereLight(0xffffff, 0xc46c08, 0.6);
         // hemiLight.color.setHSL( 0.6, 0.75, 0.5 );
-        hemiLight.groundColor.setHSL( 0.095, 0.5, 0.5 );
-        hemiLight.position.set( 1000, 500, 500 );
+        hemiLight.groundColor.setHSL(0.095, 0.5, 0.5);
+        hemiLight.position.set(1000, 500, 500);
         hemiLight.intensity = 1
-        this.scene.add( hemiLight );
-        var dirLight = new THREE.DirectionalLight( 0xc46c08, 1);
-        dirLight.position.set( 950, 350, 500 );
-        dirLight.position.multiplyScalar( 150);
-        this.scene.add( dirLight );
+        this.scene.add(hemiLight);
+        var dirLight = new THREE.DirectionalLight(0xc46c08, 1);
+        dirLight.position.set(950, 350, 500);
+        dirLight.position.multiplyScalar(150);
+        this.scene.add(dirLight);
         dirLight.castShadow = true;
         let d = 1000;
         let r = 2;
@@ -423,8 +455,8 @@ class Game {
         dirLight.shadow.camera.near = 1;
         dirLight.shadow.camera.far = 400000000;
     }
-    sinkAll(){
-        this.shipsObjects3D.map(element=>{
+    sinkAll() {
+        this.shipsObjects3D.map(element => {
             sleep(100)
             element.idleShipAnimation()
         })
@@ -434,6 +466,6 @@ function sleep(milliseconds) {
     const date = Date.now();
     let currentDate = null;
     do {
-      currentDate = Date.now();
+        currentDate = Date.now();
     } while (currentDate - date < milliseconds);
-  }
+}
