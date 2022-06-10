@@ -37,6 +37,7 @@ class Game {
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         ]
+        this.fieldsToChoseOriginal = []
         this.fieldsToChoseObjects = []
         this.clickedMat = new THREE.MeshBasicMaterial({ map: new THREE.TextureLoader().load('../../textures/chosenField.png') })
         this.notClickedMat = new THREE.MeshBasicMaterial({ map: new THREE.TextureLoader().load('../../textures/fieldToChose.png') })
@@ -52,7 +53,7 @@ class Game {
         this.hoverMat = new THREE.MeshBasicMaterial({ map: new THREE.TextureLoader().load('../../textures/hoverField.png') })
         this.tableLineGeo = new THREE.BoxGeometry(500, 3, 3);
         this.tableLineMat = new THREE.MeshBasicMaterial({ color: 0xffffff });
-        this.socket.on('shotAnswer', (data) => {
+        this.socket.on('shotAnswer', async (data) => {
             data = data.find(item => {
                 return item.for == sessionStorage.getItem('username')
             })
@@ -63,9 +64,28 @@ class Game {
             (data.turn == sessionStorage.getItem('username') || data.turn.username == sessionStorage.getItem('username')) ? this.yourTurn = true : this.yourTurn = false
             if (this.yourTurn) animations.cameraToOpponent()
             console.log("START")
-            //HIDE LOADING SCREEN, LOAD BOARD & MODELS
+            this.fieldsToChoseOriginal = [...this.fieldsToChose]
+            let turnInfo = document.getElementById('turn')
+            if (this.yourTurn) {
+                turnInfo.textContent = 'Your turn!'
+                turnInfo.style.color = 'rgb(255, 189, 114)'
+            } else {
+                turnInfo.textContent = "Opponent's turn!"
+                turnInfo.style.color = '#ff584d'
+            }
+            let k = 0
+            let interv = setInterval(() => {
+                turnInfo.style.opacity = k * 0.05
+                k++
+                if (k == 21) {
+                    clearInterval(interv)
+                }
+            }, 40)
+
+            //HIDE LOADING SCREEN, LOAD BOARD & MODELS  
         })
-        this.socket.on('gameEnd', (data) => {
+        this.socket.on('gameEnd', async (data) => {
+            await new Promise(r => setTimeout(r, 3500));
             if (data.winner == sessionStorage.getItem('username')) this.win()
             else this.lose()
         })
@@ -75,17 +95,15 @@ class Game {
         this.yourTurn = null;
         this.loadedModels = 0;
     }
-    win = async () => {
-        await new Promise(r => setTimeout(r, 500));
-        ui.switchDisplayById('winner','block')
+    win = () => {
+        ui.switchDisplayById('winner', 'block')
     }
-    lose = async () => {
-        await new Promise(r => setTimeout(r, 500));
-        ui.switchDisplayById('loser','block')
+    lose = () => {
+        ui.switchDisplayById('loser', 'block')
     }
     answerShot = async (data) => {
         let field = this.opponentFields.find(item => item.x == data.cordinates.x && item.y == data.cordinates.y)
-        data.answer=='miss'?animations.cannonBall(field.position.x, field.position.z, 0, 0.88, 0.47, field):animations.cannonBall(field.position.x, field.position.z, 0.288, 0.88, 0.47, field)
+        data.answer == 'miss' ? animations.cannonBall(field.position.x, field.position.z, 0, 0.88, 0.47, field) : animations.cannonBall(field.position.x, field.position.z, 0.288, 0.88, 0.47, field)
         await new Promise(r => setTimeout(r, 250));
         if (data.answer == 'miss') {
             field.changeMaterial(new THREE.MeshBasicMaterial({ transparent: true, map: new THREE.TextureLoader().load('../../textures/cantPlaceTransparent.png') }))
@@ -112,14 +130,42 @@ class Game {
     }
 
     changeTurn = async () => {
+        let turnInfo = document.getElementById('turn')
         this.yourTurn = !this.yourTurn
-        await new Promise(r => setTimeout(r, 2500));
+        await new Promise(r => setTimeout(r, 4000));
+        let k = 0
+        turnInfo.style.opacity = 1
+        let interv = setInterval(() => {
+            turnInfo.style.opacity = 1 - ((k) * 0.05)
+            k++
+            if (k == 21) {
+                clearInterval(interv)
+            }
+        }, 40)
         if (this.yourTurn) animations.cameraToOpponent()
         else animations.cameraToGameplaySlow()
+        await new Promise(r => setTimeout(r, 750));
+        if (this.yourTurn) {
+            turnInfo.textContent = 'Your turn!'
+            turnInfo.style.color = 'rgb(255, 189, 114)'
+        } else {
+            console.log('ajajaja')
+            turnInfo.textContent = "Opponent's turn!"
+            turnInfo.style.color = '#ff584d'
+        }
+        let z = 0
+        turnInfo.style.opacity = 0
+        let interv2 = setInterval(() => {
+            turnInfo.style.opacity = z * 0.05
+            z++
+            if (z == 21) {
+                clearInterval(interv2)
+            }
+        }, 40)
     }
 
 
-    answerHit = (data) => {
+    answerHit = async (data) => {
         this.changeTurn()
         console.log(data)
         this.fieldsToChose = data.board
@@ -129,8 +175,37 @@ class Game {
         data.answer == "hit" ? animations.cannonBall(field.position.x, field.position.z, 0.0555, 0.6, 0.29, field, data.destroyed) : animations.cannonBall(field.position.x, field.position.z, 0.316, 0.53, 0.73, field, data.destroyed)
     }
 
-    popUp = (msg) => {
-        console.log('dynamic popup here')
+    popUp = async (msg) => {
+        await new Promise(r => setTimeout(r, 500));
+        let popUp = document.getElementById('popUp')
+        popUp.textContent = msg
+        if (msg == 'Hit!') popUp.style.color = '#07940c'
+        else if (msg == 'Miss!') popUp.style.color = '#ff143c'
+        else if (msg == 'Sunk!') popUp.style.color = '#faff66'
+        let k = 0
+        let interv = setInterval(() => {
+            popUp.style.opacity = (k) * 0.04
+            k++
+            if (k == 21) {
+                this.clearUp()
+                clearInterval(interv)
+            }
+        }, 40)
+    }
+
+    clearUp = async () => {
+        await new Promise(r => setTimeout(r, 1500));
+        let k = 0
+        let interv = setInterval(() => {
+            popUp.style.opacity = 0.8 - ((k) * 0.04)
+            k++
+            if (k == 21) {
+                let popUp = document.getElementById('popUp')
+                popUp.textContent = ''
+                clearInterval(interv)
+            }
+        }, 40)
+
     }
 
     setup = () => {
@@ -277,7 +352,7 @@ class Game {
 
     }
     generateGameplayModels() {
-        ui.switchDisplayById('loadingScreen','flex')
+        ui.switchDisplayById('loadingScreen', 'flex')
         console.log("loging")
         const color = 0xefece7;  // white
         const near = 50;
@@ -314,7 +389,7 @@ class Game {
         let mediumShipsHelpArray = []
         let largeShipsHelpArray = []
 
-        
+
 
         this.fieldsToChose.map((line, y) => {
             line.map((item, x) => {

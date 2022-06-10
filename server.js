@@ -19,6 +19,9 @@ app.get('/', function (req, res) {
     res.sendFile(__dirname + "/static/index.html")
 })
 io.on('connection', (socket) => {
+    socket.on('resetUsers', () => {
+        activeUsers = []
+    })
     io.emit('test', "socket io dziala");
     socket.on('loginSuccess', (username) => {
         if (activeUsers.length < 2)
@@ -79,10 +82,11 @@ io.on('connection', (socket) => {
             if (sum == 0) destroyed = true
         }
         else if (hitShip == 2) {
-            if (playerToGetShot.board[data.y - 1][data.x] != 2 &&
-                playerToGetShot.board[data.y + 1][data.x] != 2 &&
-                playerToGetShot.board[data.y][data.x + 1] != 2 &&
-                playerToGetShot.board[data.y][data.x - 1] != 2) destroyed = true
+            if ((playerToGetShot.board[data.y - 1] == undefined || playerToGetShot.board[data.y - 1][data.x] != 2) &&
+                (playerToGetShot.board[data.y + 1] == undefined || playerToGetShot.board[data.y + 1][data.x] != 2) &&
+                (playerToGetShot.board[data.y] == undefined || playerToGetShot.board[data.y][data.x + 1] != 2) &&
+                (playerToGetShot.board[data.y] == undefined || playerToGetShot.board[data.y][data.x - 1] != 2)
+            ) destroyed = true
         }
         let dataResponse = [
             {

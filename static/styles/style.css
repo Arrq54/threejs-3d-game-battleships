@@ -19,7 +19,7 @@
   z-index: 3;
   position: absolute;
   top: 50%;
-  transform:translateY(-50%);
+  transform: translateY(-50%);
   left: 200px;
   width: 200px;
   height: 600px;
@@ -27,24 +27,24 @@
   text-align: center;
 }
 .button {
-  width:120px;
-  height:120px;
+  width: 120px;
+  height: 120px;
   background-color: rgb(54, 54, 54);
   color: white;
   cursor: pointer;
   margin: 35px;
   transition: 0.3s all ease;
-  border:1px solid black;
+  border: 1px solid black;
 }
-.remaining{
-  font-size:32px;
-  color:'whitesmoke';
-  position:absolute;
-  margin-left:-70px;
-  margin-top:-80px;
+.remaining {
+  font-size: 32px;
+  color: "whitesmoke";
+  position: absolute;
+  margin-left: -70px;
+  margin-top: -80px;
 }
 .clicked {
-  transform:scale(1.2) translateX(20%)
+  transform: scale(1.2) translateX(20%);
 }
 #shipTypeButtons {
   display: none;
@@ -125,18 +125,18 @@ body {
   transform: translateX(-50%) scale(1.2);
 }
 
-#rotateInfo{
-  width:100px;
-  height:100px;
-  position:absolute;
-  left:50%;
-  transform:translateX(-90%);
-  bottom:5%;
+#rotateInfo {
+  width: 100px;
+  height: 100px;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-90%);
+  bottom: 5%;
 }
-img{
+img {
   -webkit-user-drag: none;
 }
-.btn-ready{
+.btn-ready {
   position: absolute;
   right: 100px;
   top: 50%;
@@ -152,14 +152,14 @@ img{
   cursor: pointer;
   display: none;
 }
-.btn-ready:hover{
+.btn-ready:hover {
   transition: 0.4s all ease;
   border: 1px solid white;
   color: white;
   background-color: rgb(62, 152, 62);
 }
 
-.loadingScreen{
+.loadingScreen {
   width: 100%;
   height: 100%;
   position: absolute;
@@ -170,25 +170,25 @@ img{
   justify-content: center;
   align-items: center;
 }
-#loadingScreen{
+#loadingScreen {
   display: none;
   z-index: 12032;
 }
-.loadingHeader{
+.loadingHeader {
   text-align: center;
   color: white;
 }
-.loadingBox{
+.loadingBox {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
 }
-.loading{
+.loading {
   width: 150px;
   margin: 50px;
 }
-.loser{
+.loser {
   width: 100%;
   height: 100%;
   position: absolute;
@@ -201,7 +201,7 @@ img{
   background-size: cover;
   display: none;
 }
-.winner{
+.winner {
   width: 100%;
   height: 100%;
   position: absolute;
@@ -212,4 +212,24 @@ img{
   margin: 0;
   padding: 0;
   display: none;
+}
+
+#popUp {
+  position: absolute;
+  left: 50%;
+  top: 45%;
+  transform: translate(-50%, -50%);
+  font-size: 65px;
+  opacity: 0;
+  text-shadow: 1px 1px 4px rgba(0, 0, 0, 1);
+}
+#turn {
+  position: absolute;
+  left: 50%;
+  top: 10%;
+  transform: translate(-50%, -50%);
+  font-size: 85px;
+  color: rgb(255, 189, 114);
+  text-shadow: 1px 1px 8px rgb(77, 77, 77);
+  opacity: 0;
 }
