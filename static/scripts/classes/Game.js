@@ -72,7 +72,8 @@ class Game {
         this.shipsObjects3D = [];
         this.objectToExplode;
         this.explode = false;
-        this.yourTurn = null
+        this.yourTurn = null;
+        this.loadedModels = 0;
     }
     win = async () => {
         await new Promise(r => setTimeout(r, 500));
@@ -80,11 +81,12 @@ class Game {
     }
     lose = async () => {
         await new Promise(r => setTimeout(r, 500));
-        alert('ssiesz chuja gosciu')
+        alert('przegrana')
     }
     answerShot = async (data) => {
-        await new Promise(r => setTimeout(r, 250));
         let field = this.opponentFields.find(item => item.x == data.cordinates.x && item.y == data.cordinates.y)
+        data.answer=='miss'?animations.cannonBall(field.position.x, field.position.z, 0, 0.88, 0.47, field):animations.cannonBall(field.position.x, field.position.z, 0.288, 0.88, 0.47, field)
+        await new Promise(r => setTimeout(r, 250));
         if (data.answer == 'miss') {
             field.changeMaterial(new THREE.MeshBasicMaterial({ transparent: true, map: new THREE.TextureLoader().load('../../textures/cantPlaceTransparent.png') }))
             this.popUp('Miss!')
@@ -119,11 +121,12 @@ class Game {
 
     answerHit = (data) => {
         this.changeTurn()
+        console.log(data)
         this.fieldsToChose = data.board
         let field = this.allyFields.find(item => item.x == data.cordinates.x && item.y == data.cordinates.y)
         field.changeMaterial(new THREE.MeshBasicMaterial({ transparent: true, map: new THREE.TextureLoader().load('../../textures/cantPlaceTransparent.png') }))
         field.gotShot()
-        data.answer == "hit" ? animations.cannonBall(field.position.x, field.position.z, 0.0555, 0.6, 0.29, field) : animations.cannonBall(field.position.x, field.position.z, 0.316, 0.53, 0.73, field)
+        data.answer == "hit" ? animations.cannonBall(field.position.x, field.position.z, 0.0555, 0.6, 0.29, field, data.destroyed) : animations.cannonBall(field.position.x, field.position.z, 0.316, 0.53, 0.73, field, data.destroyed)
     }
 
     popUp = (msg) => {
@@ -274,6 +277,8 @@ class Game {
 
     }
     generateGameplayModels() {
+        ui.switchDisplayById('loadingScreen','flex')
+        console.log("loging")
         const color = 0xefece7;  // white
         const near = 50;
         const far = 2000;
@@ -308,6 +313,9 @@ class Game {
         let smallShipsHelpArray = []
         let mediumShipsHelpArray = []
         let largeShipsHelpArray = []
+
+        
+
         this.fieldsToChose.map((line, y) => {
             line.map((item, x) => {
                 if (item == 1) {
