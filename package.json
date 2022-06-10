@@ -1,0 +1,27 @@
+{
+  "name": "statki",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "dependencies": {
+    "express": "^4.18.1",
+    "mongodb": "^4.7.0",
+    "socket.io": "^4.5.1",
+    "three": "^0.141.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Arrq54/Wojdyla-Fraczek-statki.git"
+  },
+  "author": "Wojdyla Fraczek",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Arrq54/Wojdyla-Fraczek-statki/issues"
+  },
+  "homepage": "https://github.com/Arrq54/Wojdyla-Fraczek-statki#readme"
+}

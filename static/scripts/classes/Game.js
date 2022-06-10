@@ -77,11 +77,11 @@ class Game {
     }
     win = async () => {
         await new Promise(r => setTimeout(r, 500));
-        alert('wygrałes')
+        ui.switchDisplayById('winner','block')
     }
     lose = async () => {
         await new Promise(r => setTimeout(r, 500));
-        alert('przegrana')
+        ui.switchDisplayById('loser','block')
     }
     answerShot = async (data) => {
         let field = this.opponentFields.find(item => item.x == data.cordinates.x && item.y == data.cordinates.y)
@@ -378,6 +378,8 @@ class Game {
                     if (largeShipsHelpArray.filter((element) => { return element.x == x && element.y == y }).length == 0) {
                         sumOfX += x;
                         sumOfY += y;
+                        tabOfX.push(x)
+                        tabOfY.push(y)
                         xs.map((element, i) => {
                             if (this.fieldsToChose[y + ys[i]] != undefined) {
                                 if (this.fieldsToChose[y + ys[i]][x + xs[i]] != undefined) {
@@ -394,8 +396,8 @@ class Game {
                         let randomOrient = 0;
                         let avgX = sumOfX / 4
                         let avgY = sumOfY / 4
-                        console.log(avgX)
-                        console.log(avgY)
+                        console.log(tabOfX)
+                        console.log(tabOfY)
                         avgY != y ? randomOrient = largeShipRandomDirectionVertical[Math.floor(Math.random() * largeShipRandomDirectionVertical.length)] : randomOrient = largeShipRandomDirectionHorizontal[Math.floor(Math.random() * largeShipRandomDirectionHorizontal.length)]
                         // modelLoaders.loadLargeShip(1225 -avgX * 50, 725 - avgY * 50, randomOrient)
                         let largeShipObject = new Ship("largeShip", 1225 - avgX * 50, 725 - avgY * 50, randomOrient, tabOfX, tabOfY)
