@@ -9,12 +9,19 @@ class Ship extends THREE.Mesh {
         this.name = type
         this.distance = 0;
         this.shakeAngle = 0;
+        let loadingManager = new THREE.LoadingManager();
+        loadingManager.onLoad = ()=>{
+            game.loadedModels +=1;
+            if(game.loadedModels>=7){
+                ui.switchDisplayById('loadingScreen','none')
+            }
+        }
         switch(type){
             case "raft":
                 this.distance = 1
                 this.shakeAngle = Math.PI/20
                 this.obj.position.set(posX,30,posZ)
-                const loader = new THREE.GLTFLoader();
+                const loader = new THREE.GLTFLoader(loadingManager);
                 loader.load('../../models/raft/untitled.gltf', function (gltf) {
                     gltf.scene.scale.set(0.175,0.175,0.175)
                     gltf.scene.position.set(0,0,0)
@@ -30,7 +37,7 @@ class Ship extends THREE.Mesh {
                 break;
             case "smallShip":
                 this.obj.position.set(posX,30,posZ)
-                const smallShipLoader = new THREE.FBXLoader();
+                const smallShipLoader = new THREE.FBXLoader(loadingManager);
                 this.distance = 3
                 this.shakeAngle = Math.PI/10
                 smallShipLoader.load('../../models/smallShip.fbx', function (object) {
@@ -49,7 +56,7 @@ class Ship extends THREE.Mesh {
                 this.obj.position.set(posX,45,posZ)
                 this.distance = 5
                 this.shakeAngle = Math.PI/15
-                const mediumShipLoader = new THREE.FBXLoader();
+                const mediumShipLoader = new THREE.FBXLoader(loadingManager);
                 let model;
                 mediumShipLoader.load('../../models/largeShip2.fbx', function (object) {
                     model = object
@@ -66,7 +73,7 @@ class Ship extends THREE.Mesh {
                 this.obj.position.set(posX,42,posZ)
                 this.distance = 8
                 this.shakeAngle = Math.PI/36
-                const largeShipLoader = new THREE.GLTFLoader();
+                const largeShipLoader = new THREE.GLTFLoader(loadingManager);
                 largeShipLoader.load('../../models/mediumShip/scene.gltf', function (gltf) {
                     gltf.scene.scale.set(0.24,0.24,0.24)
                     gltf.scene.traverse(function (child) {

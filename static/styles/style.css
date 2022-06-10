@@ -158,3 +158,33 @@ img{
   color: white;
   background-color: rgb(62, 152, 62);
 }
+
+.loadingScreen{
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  left: 0;
+  top: 0;
+  background-color: #446394;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+#loadingScreen{
+  display: none;
+  z-index: 12032;
+}
+.loadingHeader{
+  text-align: center;
+  color: white;
+}
+.loadingBox{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.loading{
+  width: 150px;
+  margin: 50px;
+}

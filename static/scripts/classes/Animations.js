@@ -23,9 +23,6 @@ class Animations {
             })
             .start()
     }
-    waitingForOpponent() {
-
-    }
     cameraToChoose(camera) {
         new TWEEN.Tween(camera.position)
             .to({ x: 2000, y: 450, z: 0 }, 100)
@@ -61,7 +58,7 @@ class Animations {
             .onComplete()
             .start()
     }
-    cannonBall(x, z, h, s, l, field) {
+    cannonBall(x, z, h, s, l, field, destroyed) {
         var audio = new Audio('../../sound/effects/canonFire.mp3');
         audio.play();
         let ballgeometry = new THREE.SphereGeometry(4, 32, 32);
@@ -113,17 +110,21 @@ class Animations {
                 if (h == 0.0555) {
                     var audio = new Audio('../../sound/effects/hitShip.mp3');
                     audio.play();
+                    let attackedShip;
+                    game.shipsObjects3D.map((ship) => {
+                        ship.x.map((element, i) => {
+                            if (element == field.x && ship.y[i] == field.y) {
+                                attackedShip = ship;
+                            }
+                        })
+                    })
+                    destroyed?attackedShip.sink():attackedShip.shake()
+                   
                 } else {
                     var audio = new Audio('../../sound/effects/hitWater.mp3');
                     audio.play();
                 }
-                game.shipsObjects3D.map((ship) => {
-                    ship.x.map((element, i) => {
-                        if (element == field.x && ship.y[i] == field.y) {
-                            ship.shake()
-                        }
-                    })
-                })
+               
             })
             .start()
     }

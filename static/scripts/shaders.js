@@ -15,7 +15,6 @@ const vertShader = `
         gl_Position = projectionMatrix * modelViewMatrix * vec4(newPosition, 1.0);
     }
 `
-
 const fragShader = `
     varying vec3 vNormal;
     varying vec3 vColor;
