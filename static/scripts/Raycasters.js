@@ -73,8 +73,8 @@ window.addEventListener("mousedown", (e) => {
                     }
 
                 }
-                else if (clicked.shipType == "3" || clicked.shipType == "4"|| clicked.shipType == "9") {
-                    (clicked.shipType == "3" || clicked.shipType=="9") ? game.mediumShipsLeft += 1 : game.largeShipsLeft += 1;
+                else if (clicked.shipType == "3" || clicked.shipType == "4" || clicked.shipType == "9") {
+                    (clicked.shipType == "3" || clicked.shipType == "9") ? game.mediumShipsLeft += 1 : game.largeShipsLeft += 1;
 
                     ui.updateRaftsLeft()
                     clicked.material = game.notClickedMat
@@ -202,12 +202,12 @@ window.addEventListener("mousedown", (e) => {
                                 clicked.shipType = "3"
                                 field2.shipType = "3"
                                 field3.shipType = "3"
-                                if(game.mediumShipsLeft==1){
+                                if (game.mediumShipsLeft == 1) {
                                     clicked.shipType = "9"
                                     field2.shipType = "9"
                                     field3.shipType = "9"
                                 }
-                                
+
                                 clicked.material = game.clickedMat
                                 field2.material = game.clickedMat
                                 field3.material = game.clickedMat
@@ -324,7 +324,7 @@ window.addEventListener("mousedown", (e) => {
                 }
             }
         }
-        else if (intersects.some(item => item.object.name == 'invisibleFieldOpp' && item.object.shot == false)) {
+        else if (intersects.some(item => item.object.name == 'invisibleFieldOpp' && item.object.shot == false && game.yourTurn)) {
             let obj = intersects.find(item => item.object.name == 'invisibleFieldOpp').object
             let data = {
                 from: sessionStorage.getItem('username'),
@@ -332,6 +332,7 @@ window.addEventListener("mousedown", (e) => {
                 y: obj.y
             }
             ui.socket.emit('shot', data)
+            game.changeTurn()
         }
     }
 })
