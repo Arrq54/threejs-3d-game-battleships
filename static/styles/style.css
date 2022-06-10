@@ -165,7 +165,7 @@ img{
   position: absolute;
   left: 0;
   top: 0;
-  background-color: #446394;
+  background-color: #afcaac;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -187,4 +187,29 @@ img{
 .loading{
   width: 150px;
   margin: 50px;
+}
+.loser{
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  left: 0;
+  top: 0;
+  background: url("../lost.jpg") no-repeat center center fixed;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+  display: none;
+}
+.winner{
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  left: 0;
+  top: 0;
+  background: url("../win.jpg") no-repeat center center fixed;
+  background-size: 100% 100%;
+  margin: 0;
+  padding: 0;
+  display: none;
 }

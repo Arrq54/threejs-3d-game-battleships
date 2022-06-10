@@ -72,7 +72,10 @@ class Animations {
             .easing(TWEEN.Easing.Exponential.Out)
             .onUpdate()
             .onComplete(() => {
-                flyingSphere.parent.remove(flyingSphere)
+                if(flyingSphere.parent!=undefined){
+                    flyingSphere.parent.remove(flyingSphere)
+                }
+              
                 let geometry = new THREE.SphereBufferGeometry(17, 32, 32)
                 let tesselateModifier = new THREE.TessellateModifier(18, 6);
                 geometry = tesselateModifier.modify(geometry)
@@ -118,7 +121,10 @@ class Animations {
                             }
                         })
                     })
-                    destroyed?attackedShip.sink():attackedShip.shake()
+                    if(attackedShip!=undefined){
+                        destroyed?attackedShip.sink():attackedShip.shake()
+                    }
+                   
                    
                 } else {
                     var audio = new Audio('../../sound/effects/hitWater.mp3');
