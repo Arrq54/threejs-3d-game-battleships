@@ -12,7 +12,7 @@ class ModelLoaders{
                   child.castShadow = true;
                 }
              });
-            game.scene.add(gltf.scene);
+            game.deleteAfterWait.add(gltf.scene);
 
         }, undefined, function (error) {
             console.error(error);
@@ -31,7 +31,7 @@ class ModelLoaders{
                 }
             })
             model.position.set(x,y,z)
-            game.scene.add(model)
+            game.deleteAfterWait.add(model)
         })
     }
     loadLargeShipIdle(x,y,z,rotation){
@@ -47,7 +47,7 @@ class ModelLoaders{
                     child.castShadow = true;
                 }
             })
-            game.scene.add(model)
+            game.deleteAfterWait.add(model)
         });
     }
     loadMediumShipIdle(x,y,z,rotation){
@@ -56,7 +56,7 @@ class ModelLoaders{
                 gltf.scene.scale.set(0.1,0.1,0.1)
                 gltf.scene.rotation.y = rotation
                 gltf.scene.position.set(x,y,z)
-                game.scene.add(gltf.scene);
+                game.deleteAfterWait.add(gltf.scene);
                 gltf.scene.traverse(function (child) {
                     if (child.isMesh) {
                       child.castShadow = true;

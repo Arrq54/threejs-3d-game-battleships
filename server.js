@@ -7,18 +7,23 @@ app.use(express.json());
 const http = require('http');
 const server = http.createServer(app);
 const { Server } = require("socket.io");
-const destroy = require("destroy");
 const io = new Server(server);
-
+const {MongoClient} = require('mongodb');
 let activeUsers = []
-
+const uri = "mongodb+srv://BattleshipClient:IKCVjDQ1k4BvBfcP@atlascluster.c3c3b.mongodb.net/?retryWrites=true&w=majority"
+const client = new MongoClient(uri);
 app.use(express.urlencoded({
     extended: true
 }));
+let databaseData = {};
 app.get('/', function (req, res) {
     res.sendFile(__dirname + "/static/index.html")
 })
 io.on('connection', (socket) => {
+    socket.on('getDatabaseContent',()=>{
+        io.emit('databasedata',databaseData)
+    })
+   
     socket.on('resetUsers', () => {
         activeUsers = []
     })
@@ -30,7 +35,7 @@ io.on('connection', (socket) => {
     socket.on('shipsReady', (data) => {
         const index = activeUsers.indexOf(data.username)
         if (index == -1)
-            console.log('zdupcylo sie')
+            console.log('ERROR')
         else {
             activeUsers.splice(index, 1)
             activeUsers.push(data)
@@ -123,6 +128,10 @@ io.on('connection', (socket) => {
 });
 
 app.use(express.static('static'))
-server.listen(PORT, function () {
+server.listen(PORT, async function () {
     console.log("start serwera na porcie " + PORT)
+    await client.connect();
+    client.db("battleships_data").collection("startup_info").find({}).toArray((err,items)=>{
+        databaseData = JSON.parse(items[0].data)
+    }) 
 })

@@ -12,9 +12,9 @@ class Ship extends THREE.Mesh {
         let loadingManager = new THREE.LoadingManager();
         loadingManager.onLoad = () => {
             game.loadedModels += 1;
-            // if (game.loadedModels >= 7) {
+            if (game.loadedModels >= 7) {
             ui.switchDisplayById('loadingScreen', 'none')
-            // }
+            }
         }
         switch (type) {
             case "raft":

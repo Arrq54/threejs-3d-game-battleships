@@ -55,7 +55,6 @@ class Ui {
         this.socket.emit('loginSuccess', username);
         sessionStorage.setItem('username', username);
         game.pickShips()
-        // game.loadWaitingScreen()
     }
 
     switchStylesBack = () => {
@@ -89,13 +88,15 @@ class Ui {
         this.setText("r4", String(game.largeShipsLeft) + "x")
     }
     ready() {
-        // if (game.raftsLeft != 0 || game.smallShipsLeft != 0 || game.mediumShipsLeft != 0 || game.largeShipsLeft != 0) return;
+        if (game.raftsLeft != 0 || game.smallShipsLeft != 0 || game.mediumShipsLeft != 0 || game.largeShipsLeft != 0) return;
         game.gatherInfoAboutShips()
+        // game.loadWaitingScreen()
         let board = game.fieldsToChose
         let data = {
             username: sessionStorage.getItem('username'),
             board: board
         }
+        game.ready = true;
         this.socket.emit('shipsReady', data)
     }
 }
