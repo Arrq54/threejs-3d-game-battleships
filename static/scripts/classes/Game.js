@@ -50,6 +50,7 @@ class Game {
         this.cantPlaceArrayHelp = [];
         this.helpArrayForHover = [];
         this.horizontal = true;
+        this.ready = false;
         this.hoverMat = new THREE.MeshBasicMaterial({ map: new THREE.TextureLoader().load('../../textures/hoverField.png') })
         this.tableLineGeo = new THREE.BoxGeometry(500, 3, 3);
         this.tableLineMat = new THREE.MeshBasicMaterial({ color: 0xffffff });
@@ -64,6 +65,8 @@ class Game {
             (data.turn == sessionStorage.getItem('username') || data.turn.username == sessionStorage.getItem('username')) ? this.yourTurn = true : this.yourTurn = false
             if (this.yourTurn) animations.cameraToOpponent()
             console.log("START")
+           
+            this.waitForOpponent=false;
             this.fieldsToChoseOriginal = [...this.fieldsToChose]
             let turnInfo = document.getElementById('turn')
             if (this.yourTurn) {
@@ -78,7 +81,7 @@ class Game {
                 turnInfo.style.opacity = k * 0.05
                 k++
                 if (k == 21) {
-                    clearInterval(interv)
+                   clearInterval(interv)
                 }
             }, 40)
 
@@ -88,6 +91,14 @@ class Game {
             await new Promise(r => setTimeout(r, 3500));
             if (data.winner == sessionStorage.getItem('username')) this.win()
             else this.lose()
+        })
+        this.idleShips = []
+        this.deleteAfterWait = new THREE.Object3D()
+        this.socket.emit('getDatabaseContent',{})
+        this.socket.on('databasedata',(data)=>{
+            console.log(data)
+            this.idleShips = data.idleShips;
+            this.myBoard = data.myBoard
         })
         this.shipsObjects3D = [];
         this.objectToExplode;
@@ -251,22 +262,25 @@ class Game {
         const near = 50;
         const far = 2050;
         this.scene.fog = new THREE.Fog(color, near, far);
-
+        this.idleShips.map(item=>{
+            switch(item.type){
+                case "small":
+                    modelLoaders.loadSmallShipIdle(item.x,item.y,item.z,item.rotation)
+                    break;
+                case "medium":
+                    modelLoaders.loadMediumShipIdle(item.x,item.y,item.z,item.rotation)
+                    break;
+                case "large":
+                    modelLoaders.loadLargeShipIdle(item.x,item.y,item.z,item.rotation)
+                    break;
+                default:
+                    break;
+            }
+        })
         ui.switchDisplayById("wait", "block")
         this.waitForOpponent = true;
-        modelLoaders.loadSmallShipIdle(140, 30, 170, Math.PI - 0.5)
-        modelLoaders.loadSmallShipIdle(-60, 30, 170, Math.PI / 2)
-        modelLoaders.loadSmallShipIdle(-120, 30, -180, Math.PI)
-        modelLoaders.loadLargeShipIdle(80, 40, -250, Math.PI + 0.5)
-        modelLoaders.loadLargeShipIdle(-380, 40, -420, Math.PI + 0.5)
-        modelLoaders.loadLargeShipIdle(-620, 40, -720, Math.PI + 0.5)
-        modelLoaders.loadSmallShipIdle(-220, 30, -180, Math.PI)
-        modelLoaders.loadMediumShipIdle(-500, 30, 20, Math.PI)
-        modelLoaders.loadMediumShipIdle(500, 30, 20, Math.PI)
-        modelLoaders.loadMediumShipIdle(170, 30, 20, Math.PI)
-        modelLoaders.loadMediumShipIdle(250, 30, 320, Math.PI + 0.3)
-        modelLoaders.loadMediumShipIdle(650, 30, -820, 0)
         modelLoaders.loadIsland()
+        this.scene.add(this.deleteAfterWait)
         // var audio = new Audio('../../sound/soundtrack/waiting theme.mp3');
         // audio.play();
 
@@ -349,7 +363,6 @@ class Game {
         })
         let temp = this.fieldsToChose
         animations.cameraToGameplay(this.camera)
-
     }
     generateGameplayModels() {
         ui.switchDisplayById('loadingScreen', 'flex')
@@ -358,23 +371,19 @@ class Game {
         const near = 50;
         const far = 2000;
         this.scene.fog = new THREE.Fog(color, near, far);
-
-
         this.camera.lookAt(1000, 0, 500)
         ui.switchDisplayById("shipTypeButtons", "none")
         ui.switchDisplayById("ready", "none")
         ui.switchDisplayById("rotateInfo", "none")
-        let xs = [1250, 1200, 1150, 1100, 1050, 1000, 950, 900, 850, 800, 750, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000]
-        let zs = [500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 250, 300, 350, 400, 450, 500, 550, 600, 650, 700, 750]
-        let rotations = [Math.PI / 2, Math.PI / 2, Math.PI / 2, Math.PI / 2, Math.PI / 2, Math.PI / 2, Math.PI / 2, Math.PI / 2, Math.PI / 2, Math.PI / 2, Math.PI / 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+        console.log(this.myBoard)
+        let xs = this.myBoard.x;
+        let zs = this.myBoard.z;
+        let rotations = this.myBoard.rotations
         xs.map((e, i) => {
             this.addTableLine(xs[i], zs[i], rotations[i])
         })
-
         this.generateOpponentsBoard(xs, zs)
-
         //GENEROWANIE MODELI STATKOW NA PODSTAWIE TABELI WYBRANYCH PÓL
-
         console.log("GENEROWANIE STATKOW")
 
         let raftRandomDirection = [Math.PI, -Math.PI, Math.PI / 2]
