@@ -7,12 +7,13 @@
   overflow: hidden;
 }
 .wait {
+  width: fit-content;
   position: absolute;
   font-size: 75px;
   left: 50%;
   top: 50px;
   transform: translateX(-50%);
-  color: white;
+  color: black;
   display: none;
 }
 .ui-chosing-ships-buttons {
@@ -106,7 +107,8 @@ body {
   left: 0;
   margin-top: -10px;
 }
-#playButton {
+#playButton, #resetButton {
+  text-shadow: 0px 0px 15px rgba(255, 255, 255, 1);
   width: 140px;
   height: 40px;
   margin-top: 25px;
@@ -121,10 +123,13 @@ body {
   transition: 0.2s ease;
   cursor: pointer;
 }
-#playButton:hover {
+#playButton:hover, #resetButton:hover {
   transform: translateX(-50%) scale(1.2);
 }
-
+.flex{
+  display: flex;
+  flex-direction: column;
+}
 #rotateInfo {
   width: 100px;
   height: 100px;
@@ -232,4 +237,28 @@ img {
   color: rgb(255, 189, 114);
   text-shadow: 1px 1px 8px rgb(77, 77, 77);
   opacity: 0;
+}
+#loginStatus{
+  color: red;
+  text-align: center;
+  margin-top: 20px;
+}
+.playAgainButton{
+  border: 3px solid rgb(135, 211, 135);
+  position: absolute;
+  left: 50%;
+  transform: translate(-50%,0);
+  bottom: 50px;
+  background: none;
+  color: rgb(135, 211, 135);
+  padding: 10px;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: 0.3s all ease;
+}
+.playAgainButton:hover{
+  transform: translate(-50%,-5px);
+  background-color: rgb(135, 211, 135);
+  color: white;
+  transition: 0.3s all ease;
 }

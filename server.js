@@ -29,8 +29,23 @@ io.on('connection', (socket) => {
     })
     io.emit('test', "socket io dziala");
     socket.on('loginSuccess', (username) => {
-        if (activeUsers.length < 2)
-            activeUsers.push(username)
+        let success = false;
+        let msg = "";
+        if (activeUsers.length < 2){
+            if(!activeUsers.includes(username)){
+                activeUsers.push(username)
+                success=true;
+            }else{
+                msg = "User with this username already exists!"
+            }
+        }else{
+            msg = "There are already two players in the game!"
+        }
+        let data = {
+            success: success,
+            errorMessage: msg
+        }
+        io.emit('loginStatus',data)
     })
     socket.on('shipsReady', (data) => {
         const index = activeUsers.indexOf(data.username)
@@ -133,5 +148,12 @@ server.listen(PORT, async function () {
     await client.connect();
     client.db("battleships_data").collection("startup_info").find({}).toArray((err,items)=>{
         databaseData = JSON.parse(items[0].data)
+        client.db("battleships_data").collection("idleShipsLocations").find({}).toArray((err,items)=>{
+            let temp = [];
+            items.map(item=>{
+                temp.push(item.data)
+            })
+            databaseData.idleShips = temp;
+        }) 
     }) 
 })
