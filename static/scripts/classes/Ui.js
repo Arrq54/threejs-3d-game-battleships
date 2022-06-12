@@ -1,6 +1,7 @@
 class Ui {
     constructor() {
         this.socket = io();
+        this.logged = false;
         document.getElementById('playButton').onclick = this.handleLogin
         window.addEventListener("keydown", (e) => {
             switch (e.keyCode) {
@@ -49,14 +50,22 @@ class Ui {
             document.getElementsByName('username')[0].onclick = this.switchStylesBack
             return;
         }
-        document.getElementById('loginBox').style.display = 'none'
-        document.body.style.background = 'none'
-        document.getElementById('placeShips').style.display = 'block'
         this.socket.emit('loginSuccess', username);
-        sessionStorage.setItem('username', username);
-        game.pickShips()
+        this.socket.on("loginStatus",(data)=>{
+            if(!this.logged){
+                if(data.success){
+                    document.getElementById('loginBox').style.display = 'none'
+                    document.body.style.background = 'none'
+                    document.getElementById('placeShips').style.display = 'block'
+                    this.logged = true;
+                    sessionStorage.setItem('username', username);
+                    game.pickShips()
+                }else{
+                    document.getElementById('loginStatus').innerText = data.errorMessage;
+                }
+            }
+        })
     }
-
     switchStylesBack = () => {
         document.getElementsByName('username')[0].style.borderTop = '1px solid rgba(255, 255, 255, 0.5)'
         document.getElementsByName('username')[0].style.borderBottom = '1px solid rgba(255, 255, 255, 0.5)'
@@ -98,5 +107,9 @@ class Ui {
         }
         game.ready = true;
         this.socket.emit('shipsReady', data)
+    }
+    playAgain(){
+        reset();
+        document.location.reload()
     }
 }

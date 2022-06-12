@@ -37,8 +37,13 @@
         name="username"
         placeholder="Username"
       />
-      <button id="playButton">PLAY</button>
+      <div class="flex">
+        <button id="playButton">PLAY</button>
+        <button id="resetButton" onClick="reset()">RESET</button>
+      </div>
+      
       <img id="skull" src="./czacha.png" />
+      <h4 id="loginStatus"></h4>
     </div>
     <div class="loadingScreen" id="loadingScreen">
       <div class="loadingBox">
@@ -46,8 +51,12 @@
         <img src="loading.gif" alt="" class="loading" />
       </div>
     </div>
-    <div class="loser" id="loser"></div>
-    <div class="winner" id="winner"></div>
+    <div class="loser" id="loser">
+      <button class="playAgainButton" id="playAgainButton" onclick="ui.playAgain()">PLAY AGAIN</button>
+    </div>
+    <div class="winner" id="winner">
+      <button class="playAgainButton" id="playAgainButton" onclick="ui.playAgain()">PLAY AGAIN</button>
+    </div>
     <div id="popUp"></div>
     <div id="turn">Your turn!</div>
     <!-- <button style="position: absolute; z-index: 2; top: 50px; left: 50px;" onclick="game.sinkAll()">ANIMACJA GÓRA DÓŁ</button> -->
@@ -90,14 +99,14 @@
         </div>
       </div>
       <img src="icons/rotate.png" id="rotateInfo" />
-      <h1 class="wait" id="wait">Czekaj na przeciwnika!</h1>
+      <h1 class="wait" id="wait">CZEKAJ NA PRZECIWNIKA!</h1>
     </div>
     <div onclick="ui.ready()" id="ready" class="btn-ready">
       <p>READY</p>
     </div>
-    <button style="position: absolute; left: 10%; top: 10%" onClick="reset()">
+    <!-- <button style="position: absolute; left: 10%; top: 10%" onClick="reset()">
       RESET
-    </button>
+    </button> -->
     <script src="/socket.io/socket.io.js"></script>
     <script>
       var socket = io();

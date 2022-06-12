@@ -48,6 +48,7 @@ class Game {
         this.largeShipsLeft = 1;
         this.cantPlaceArray = [];
         this.cantPlaceArrayHelp = [];
+        this.gameEnded = false;
         this.helpArrayForHover = [];
         this.horizontal = true;
         this.ready = false;
@@ -108,9 +109,15 @@ class Game {
     }
     win = () => {
         ui.switchDisplayById('winner', 'block')
+        ui.switchDisplayById('root','none')
+        ui.switchDisplayById('turn','none')
+        this.gameEnded = true;
     }
     lose = () => {
+        this.gameEnded = true;
         ui.switchDisplayById('loser', 'block')
+        ui.switchDisplayById('root','none')
+        ui.switchDisplayById('turn','none')
     }
     answerShot = async (data) => {
         let field = this.opponentFields.find(item => item.x == data.cordinates.x && item.y == data.cordinates.y)
@@ -278,6 +285,9 @@ class Game {
             }
         })
         ui.switchDisplayById("wait", "block")
+        ui.switchDisplayById("shipTypeButtons", "none")
+        ui.switchDisplayById("rotateInfo", "none")
+        ui.switchDisplayById("ready", "none")
         this.waitForOpponent = true;
         modelLoaders.loadIsland()
         this.scene.add(this.deleteAfterWait)
