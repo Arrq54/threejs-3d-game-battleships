@@ -3,39 +3,39 @@ class Ui {
         this.socket = io();
         this.logged = false;
         document.getElementById('playButton').onclick = this.handleLogin
-        window.addEventListener("keydown", (e) => {
-            switch (e.keyCode) {
-                case 38:
-                    game.cameraDown = true;
-                    break;
-                case 40:
-                    game.cameraUp = true;
-                    break;
-                case 37:
-                    game.cameraLeft = true;
-                    break;
-                case 39:
-                    game.cameraRight = true;
-                    break;
-            }
-        });
-        window.addEventListener("keyup", (e) => {
-            switch (e.keyCode) {
-                case 38:
-                    game.cameraDown = false;
-                    break;
+        // window.addEventListener("keydown", (e) => {
+        //     switch (e.keyCode) {
+        //         case 38:
+        //             game.cameraDown = true;
+        //             break;
+        //         case 40:
+        //             game.cameraUp = true;
+        //             break;
+        //         case 37:
+        //             game.cameraLeft = true;
+        //             break;
+        //         case 39:
+        //             game.cameraRight = true;
+        //             break;
+        //     }
+        // });
+        // window.addEventListener("keyup", (e) => {
+        //     switch (e.keyCode) {
+        //         case 38:
+        //             game.cameraDown = false;
+        //             break;
 
-                case 40:
-                    game.cameraUp = false;
-                    break;
-                case 37:
-                    game.cameraLeft = false;
-                    break;
-                case 39:
-                    game.cameraRight = false;
-                    break;
-            }
-        });
+        //         case 40:
+        //             game.cameraUp = false;
+        //             break;
+        //         case 37:
+        //             game.cameraLeft = false;
+        //             break;
+        //         case 39:
+        //             game.cameraRight = false;
+        //             break;
+        //     }
+        // });
     }
 
     handleLogin = () => {
@@ -99,7 +99,7 @@ class Ui {
     ready() {
         if (game.raftsLeft != 0 || game.smallShipsLeft != 0 || game.mediumShipsLeft != 0 || game.largeShipsLeft != 0) return;
         game.gatherInfoAboutShips()
-        // game.loadWaitingScreen()
+        game.loadWaitingScreen()
         let board = game.fieldsToChose
         let data = {
             username: sessionStorage.getItem('username'),

@@ -64,6 +64,9 @@ class Game {
         })
         this.socket.on('gameStart', (data) => {
             (data.turn == sessionStorage.getItem('username') || data.turn.username == sessionStorage.getItem('username')) ? this.yourTurn = true : this.yourTurn = false
+            animations.cameraToGameplay(this.camera)
+            this.deleteAfterWait.parent.remove(this.deleteAfterWait)
+            ui.switchDisplayById('wait','none')
             if (this.yourTurn) animations.cameraToOpponent()
             console.log("START")
            
@@ -167,7 +170,6 @@ class Game {
             turnInfo.textContent = 'Your turn!'
             turnInfo.style.color = 'rgb(255, 189, 114)'
         } else {
-            console.log('ajajaja')
             turnInfo.textContent = "Opponent's turn!"
             turnInfo.style.color = '#ff584d'
         }
@@ -269,16 +271,18 @@ class Game {
         const near = 50;
         const far = 2050;
         this.scene.fog = new THREE.Fog(color, near, far);
+        let loadingManager = new THREE.LoadingManager();
+        ui.switchDisplayById('loadingScreen','flex')
         this.idleShips.map(item=>{
             switch(item.type){
                 case "small":
-                    modelLoaders.loadSmallShipIdle(item.x,item.y,item.z,item.rotation)
+                    modelLoaders.loadSmallShipIdle(item.x,item.y,item.z,item.rotation, loadingManager)
                     break;
                 case "medium":
-                    modelLoaders.loadMediumShipIdle(item.x,item.y,item.z,item.rotation)
+                    modelLoaders.loadMediumShipIdle(item.x,item.y,item.z,item.rotation, loadingManager)
                     break;
                 case "large":
-                    modelLoaders.loadLargeShipIdle(item.x,item.y,item.z,item.rotation)
+                    modelLoaders.loadLargeShipIdle(item.x,item.y,item.z,item.rotation, loadingManager)
                     break;
                 default:
                     break;
@@ -289,8 +293,11 @@ class Game {
         ui.switchDisplayById("rotateInfo", "none")
         ui.switchDisplayById("ready", "none")
         this.waitForOpponent = true;
-        modelLoaders.loadIsland()
+        modelLoaders.loadIsland(loadingManager)
         this.scene.add(this.deleteAfterWait)
+        loadingManager.onLoad = ()=> {
+            ui.switchDisplayById('loadingScreen','none')
+        }
         // var audio = new Audio('../../sound/soundtrack/waiting theme.mp3');
         // audio.play();
 
@@ -372,11 +379,10 @@ class Game {
             }
         })
         let temp = this.fieldsToChose
-        animations.cameraToGameplay(this.camera)
+      
     }
     generateGameplayModels() {
         ui.switchDisplayById('loadingScreen', 'flex')
-        console.log("loging")
         const color = 0xefece7;  // white
         const near = 50;
         const far = 2000;
@@ -385,7 +391,6 @@ class Game {
         ui.switchDisplayById("shipTypeButtons", "none")
         ui.switchDisplayById("ready", "none")
         ui.switchDisplayById("rotateInfo", "none")
-        console.log(this.myBoard)
         let xs = this.myBoard.x;
         let zs = this.myBoard.z;
         let rotations = this.myBoard.rotations
@@ -395,21 +400,16 @@ class Game {
         this.generateOpponentsBoard(xs, zs)
         //GENEROWANIE MODELI STATKOW NA PODSTAWIE TABELI WYBRANYCH PÓL
         console.log("GENEROWANIE STATKOW")
-
         let raftRandomDirection = [Math.PI, -Math.PI, Math.PI / 2]
         let smallShipRandomDirectionHorizontal = [Math.PI / 2, -Math.PI / 2]
         let smallShipRandomDirectionVertical = [0, Math.PI]
         let mediumShipRandomDirectionHorizontal = [Math.PI / 2, -Math.PI / 2]
         let mediumShipRandomDirectionVertical = [Math.PI, 0]
-
         let largeShipRandomDirectionHorizontal = [Math.PI / 2, -Math.PI / 2]
         let largeShipRandomDirectionVertical = [Math.PI, 0]
         let smallShipsHelpArray = []
         let mediumShipsHelpArray = []
         let largeShipsHelpArray = []
-
-
-
         this.fieldsToChose.map((line, y) => {
             line.map((item, x) => {
                 if (item == 1) {
@@ -490,8 +490,6 @@ class Game {
                         let randomOrient = 0;
                         let avgX = sumOfX / 4
                         let avgY = sumOfY / 4
-                        console.log(tabOfX)
-                        console.log(tabOfY)
                         avgY != y ? randomOrient = largeShipRandomDirectionVertical[Math.floor(Math.random() * largeShipRandomDirectionVertical.length)] : randomOrient = largeShipRandomDirectionHorizontal[Math.floor(Math.random() * largeShipRandomDirectionHorizontal.length)]
                         // modelLoaders.loadLargeShip(1225 -avgX * 50, 725 - avgY * 50, randomOrient)
                         let largeShipObject = new Ship("largeShip", 1225 - avgX * 50, 725 - avgY * 50, randomOrient, tabOfX, tabOfY)
