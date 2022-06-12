@@ -1,8 +1,8 @@
 class ModelLoaders{
     constructor(){
     }
-    loadIsland(){
-        const loader = new THREE.GLTFLoader();
+    loadIsland(loadingManager){
+        const loader = new THREE.GLTFLoader(loadingManager);
         loader.load('../../models/island/scene.gltf', function (gltf) {
             gltf.scene.scale.set(14,14,14)
             gltf.scene.rotation.y = Math.PI/1.5
@@ -18,8 +18,8 @@ class ModelLoaders{
             console.error(error);
         });
     }
-    loadSmallShipIdle(x,y,z,rotation){
-        const loader = new THREE.FBXLoader();
+    loadSmallShipIdle(x,y,z,rotation, loadingManager){
+        const loader = new THREE.FBXLoader(loadingManager);
         let model;
         loader.load('../../models/smallShip.fbx', function (object) {
             model = object
@@ -34,8 +34,8 @@ class ModelLoaders{
             game.deleteAfterWait.add(model)
         })
     }
-    loadLargeShipIdle(x,y,z,rotation){
-        const loader = new THREE.FBXLoader();
+    loadLargeShipIdle(x,y,z,rotation, loadingManager){
+        const loader = new THREE.FBXLoader(loadingManager);
         let model;
         loader.load('../../models/largeShip2.fbx', function (object) {
             model = object
@@ -50,8 +50,8 @@ class ModelLoaders{
             game.deleteAfterWait.add(model)
         });
     }
-    loadMediumShipIdle(x,y,z,rotation){
-        const loader = new THREE.GLTFLoader();
+    loadMediumShipIdle(x,y,z,rotation, loadingManager){
+        const loader = new THREE.GLTFLoader(loadingManager);
             loader.load('../../models/mediumShip/scene.gltf', function (gltf) {
                 gltf.scene.scale.set(0.1,0.1,0.1)
                 gltf.scene.rotation.y = rotation
