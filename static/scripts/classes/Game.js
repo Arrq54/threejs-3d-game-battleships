@@ -37,7 +37,6 @@ class Game {
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         ]
-        this.fieldsToChoseOriginal = []
         this.fieldsToChoseObjects = []
         this.clickedMat = new THREE.MeshBasicMaterial({ map: new THREE.TextureLoader().load('../../textures/chosenField.png') })
         this.notClickedMat = new THREE.MeshBasicMaterial({ map: new THREE.TextureLoader().load('../../textures/fieldToChose.png') })
@@ -66,12 +65,11 @@ class Game {
             (data.turn == sessionStorage.getItem('username') || data.turn.username == sessionStorage.getItem('username')) ? this.yourTurn = true : this.yourTurn = false
             animations.cameraToGameplay(this.camera)
             this.deleteAfterWait.parent.remove(this.deleteAfterWait)
-            ui.switchDisplayById('wait','none')
+            ui.switchDisplayById('wait', 'none')
             if (this.yourTurn) animations.cameraToOpponent()
             console.log("START")
-           
-            this.waitForOpponent=false;
-            this.fieldsToChoseOriginal = [...this.fieldsToChose]
+
+            this.waitForOpponent = false;
             let turnInfo = document.getElementById('turn')
             if (this.yourTurn) {
                 turnInfo.textContent = 'Your turn!'
@@ -85,7 +83,7 @@ class Game {
                 turnInfo.style.opacity = k * 0.05
                 k++
                 if (k == 21) {
-                   clearInterval(interv)
+                    clearInterval(interv)
                 }
             }, 40)
 
@@ -98,8 +96,8 @@ class Game {
         })
         this.idleShips = []
         this.deleteAfterWait = new THREE.Object3D()
-        this.socket.emit('getDatabaseContent',{})
-        this.socket.on('databasedata',(data)=>{
+        this.socket.emit('getDatabaseContent', {})
+        this.socket.on('databasedata', (data) => {
             console.log(data)
             this.idleShips = data.idleShips;
             this.myBoard = data.myBoard
@@ -112,20 +110,18 @@ class Game {
     }
     win = () => {
         ui.switchDisplayById('winner', 'block')
-        ui.switchDisplayById('root','none')
-        ui.switchDisplayById('turn','none')
+        ui.switchDisplayById('root', 'none')
+        ui.switchDisplayById('turn', 'none')
         this.gameEnded = true;
     }
     lose = () => {
         this.gameEnded = true;
         ui.switchDisplayById('loser', 'block')
-        ui.switchDisplayById('root','none')
-        ui.switchDisplayById('turn','none')
+        ui.switchDisplayById('root', 'none')
+        ui.switchDisplayById('turn', 'none')
     }
     answerShot = async (data) => {
         let field = this.opponentFields.find(item => item.x == data.cordinates.x && item.y == data.cordinates.y)
-        data.answer == 'miss' ? animations.cannonBall(field.position.x, field.position.z, 0, 0.88, 0.47, field) : animations.cannonBall(field.position.x, field.position.z, 0.288, 0.88, 0.47, field)
-        await new Promise(r => setTimeout(r, 250));
         if (data.answer == 'miss') {
             field.changeMaterial(new THREE.MeshBasicMaterial({ transparent: true, map: new THREE.TextureLoader().load('../../textures/cantPlaceTransparent.png') }))
             this.popUp('Miss!')
@@ -134,12 +130,80 @@ class Game {
             (data.destroyed) ? this.popUp('Sunk!') : this.popUp('Hit!')
             field.changeMaterial(new THREE.MeshBasicMaterial({ transparent: true, map: new THREE.TextureLoader().load('../../textures/hit.png') }))
         }
+        field.gotShot()
+        await new Promise(r => setTimeout(r, 250));
+        data.answer == 'miss' ? animations.cannonBall(field.position.x, field.position.z, 0, 0.88, 0.47, field) : animations.cannonBall(field.position.x, field.position.z, 0.288, 0.88, 0.47, field)
+        let turn = data.rotation
+        console.log(data.ship)
         if (data.destroyed) {
+            let x = data.cordinates.x
+            let y = data.cordinates.y
+            let bugfix = data.bugfix
+
             if (data.ship == 1) {
                 this.opponentFields.forEach(item => {
-                    for (let i = -1; i < 2; i++) {
-                        if (Math.abs(item.x - data.cordinates.x) < 2 && item.y == data.cordinates.y + i && data.cordinates.y >= 1
-                            && !(item.x == data.cordinates.x && item.y == data.cordinates.y)) {
+                    if (Math.abs(item.x - x) < 2 && Math.abs(item.y - y) < 2
+                        && !(item.x == x && item.y == y)) {
+                        item.changeMaterial(new THREE.MeshBasicMaterial({ transparent: true, map: new THREE.TextureLoader().load('../../textures/cantPlaceTransparent.png') }))
+                        item.gotShot()
+                    }
+                })
+            } else if (data.ship == 2) {
+                this.opponentFields.forEach(item => {
+                    if (turn.includes('x')) {
+                        if ((Math.abs(item.x - x) < 2 || (turn == '-x' && Math.abs(item.x - (x - 1)) < 2) || (turn == 'x' && Math.abs(item.x - (x + 1)) < 2)) && (Math.abs(item.y - y) < 2)) {
+                            item.changeMaterial(new THREE.MeshBasicMaterial({ transparent: true, map: new THREE.TextureLoader().load('../../textures/cantPlaceTransparent.png') }))
+                            item.gotShot()
+                        }
+                    } else if (turn.includes('y')) {
+                        if ((Math.abs(item.y - y) < 2 || (turn == '-y' && Math.abs(item.y - (y - 1)) < 2) || (turn == 'y' && Math.abs(item.y - (y + 1)) < 2)) && (Math.abs(item.x - x) < 2)) {
+                            item.changeMaterial(new THREE.MeshBasicMaterial({ transparent: true, map: new THREE.TextureLoader().load('../../textures/cantPlaceTransparent.png') }))
+                            item.gotShot()
+                        }
+                    }
+                })
+            }
+            else if (data.ship == 3 || data.ship == 9) {
+                this.opponentFields.forEach(item => {
+                    if (turn.includes('x')) {
+                        if ((Math.abs(item.x - x) < 2 || (bugfix[y][x - 1] != undefined && (bugfix[y][x - 1].toString().includes('3') || bugfix[y][x - 1].toString().includes('9')) && Math.abs(item.x - (x - 1)) < 2) ||
+                            (bugfix[y][x - 2] != undefined && (bugfix[y][x - 2].toString().includes('3') || bugfix[y][x - 2].toString().includes('9')) && Math.abs(item.x - (x - 2)) < 2) ||
+                            (bugfix[y][x + 1] != undefined && (bugfix[y][x + 1].toString().includes('3') || bugfix[y][x + 2].toString().includes('9')) && Math.abs(item.x - (x + 1)) < 2) ||
+                            (bugfix[y][x + 2] != undefined && (bugfix[y][x + 2].toString().includes('3') || bugfix[y][x + 2].toString().includes('9')) && Math.abs(item.x - (x + 2)) < 2)) && Math.abs(item.y - y) < 2) {
+                            item.changeMaterial(new THREE.MeshBasicMaterial({ transparent: true, map: new THREE.TextureLoader().load('../../textures/cantPlaceTransparent.png') }))
+                            item.gotShot()
+                        }
+                    }
+                    if (turn.includes('y')) {
+                        if ((Math.abs(item.y - y) < 2 || (bugfix[y - 1][x] != undefined && (bugfix[y - 1][x].toString().includes('3') || bugfix[y - 1][x].toString().includes('9')) && Math.abs(item.y - (y - 1)) < 2) ||
+                            (bugfix[y - 2] != undefined && (bugfix[y - 2][x].toString().includes('3') || bugfix[y - 2][x].toString().includes('9')) && Math.abs(item.y - (y - 2)) < 2) ||
+                            (bugfix[y + 1] != undefined && (bugfix[y + 1][x].toString().includes('3') || bugfix[y + 1][x].toString().includes('9')) && Math.abs(item.y - (y + 1)) < 2) ||
+                            (bugfix[y + 2] != undefined && (bugfix[y + 2][x].toString().includes('3') || bugfix[y + 2][x].toString().includes('9')) && Math.abs(item.y - (y + 2)) < 2)) && Math.abs(item.x - x) < 2) {
+                            item.changeMaterial(new THREE.MeshBasicMaterial({ transparent: true, map: new THREE.TextureLoader().load('../../textures/cantPlaceTransparent.png') }))
+                            item.gotShot()
+                        }
+                    }
+                })
+            } else if (data.ship == 4) {
+                this.opponentFields.forEach(item => {
+                    if (turn.includes('x')) {
+                        if ((Math.abs(item.x - x) < 2 || (bugfix[y][x - 1] != undefined && (bugfix[y][x - 1].toString().includes('4')) && Math.abs(item.x - (x - 1)) < 2) ||
+                            (bugfix[y][x - 2] != undefined && (bugfix[y][x - 2].toString().includes('4')) && Math.abs(item.x - (x - 2)) < 2) ||
+                            (bugfix[y][x + 1] != undefined && (bugfix[y][x + 1].toString().includes('4')) && Math.abs(item.x - (x + 1)) < 2) ||
+                            (bugfix[y][x + 2] != undefined && (bugfix[y][x + 2].toString().includes('4')) && Math.abs(item.x - (x + 2)) < 2) ||
+                            (bugfix[y][x + 3] != undefined && (bugfix[y][x + 3].toString().includes('4')) && Math.abs(item.x - (x + 3)) < 2) ||
+                            (bugfix[y][x - 3] != undefined && (bugfix[y][x - 3].toString().includes('4')) && Math.abs(item.x - (x - 3)) < 2)) && Math.abs(item.y - y) < 2) {
+                            item.changeMaterial(new THREE.MeshBasicMaterial({ transparent: true, map: new THREE.TextureLoader().load('../../textures/cantPlaceTransparent.png') }))
+                            item.gotShot()
+                        }
+                    }
+                    if (turn.includes('y')) {
+                        if ((Math.abs(item.y - y) < 2 || (bugfix[y - 1][x] != undefined && (bugfix[y - 1][x].toString().includes('4')) && Math.abs(item.y - (y - 1)) < 2) ||
+                            (bugfix[y - 2] != undefined && (bugfix[y - 2][x].toString().includes('4')) && Math.abs(item.y - (y - 2)) < 2) ||
+                            (bugfix[y + 1] != undefined && (bugfix[y + 1][x].toString().includes('4')) && Math.abs(item.y - (y + 1)) < 2) ||
+                            (bugfix[y + 2] != undefined && (bugfix[y + 2][x].toString().includes('4')) && Math.abs(item.y - (y + 2)) < 2) ||
+                            (bugfix[y + 3] != undefined && (bugfix[y + 3][x].toString().includes('4')) && Math.abs(item.y - (y + 3)) < 2) ||
+                            (bugfix[y - 3] != undefined && (bugfix[y - 3][x].toString().includes('4')) && Math.abs(item.y - (y - 3)) < 2)) && Math.abs(item.x - x) < 2) {
                             item.changeMaterial(new THREE.MeshBasicMaterial({ transparent: true, map: new THREE.TextureLoader().load('../../textures/cantPlaceTransparent.png') }))
                             item.gotShot()
                         }
@@ -147,8 +211,9 @@ class Game {
                 })
             }
         }
-        field.gotShot()
     }
+
+
 
     changeTurn = async () => {
         let turnInfo = document.getElementById('turn')
@@ -190,7 +255,7 @@ class Game {
         console.log(data)
         this.fieldsToChose = data.board
         let field = this.allyFields.find(item => item.x == data.cordinates.x && item.y == data.cordinates.y)
-        field.changeMaterial(new THREE.MeshBasicMaterial({ transparent: true, map: new THREE.TextureLoader().load('../../textures/cantPlaceTransparent.png') }))
+        data.answer == "hit" ? field.changeMaterial(new THREE.MeshBasicMaterial({ color: "#ff1929", transparent: true, opacity: 0.8 })) : field.changeMaterial(new THREE.MeshBasicMaterial({ transparent: true, map: new THREE.TextureLoader().load('../../textures/cantPlaceTransparent.png') }))
         field.gotShot()
         data.answer == "hit" ? animations.cannonBall(field.position.x, field.position.z, 0.0555, 0.6, 0.29, field, data.destroyed) : animations.cannonBall(field.position.x, field.position.z, 0.316, 0.53, 0.73, field, data.destroyed)
     }
@@ -272,17 +337,17 @@ class Game {
         const far = 2050;
         this.scene.fog = new THREE.Fog(color, near, far);
         let loadingManager = new THREE.LoadingManager();
-        ui.switchDisplayById('loadingScreen','flex')
-        this.idleShips.map(item=>{
-            switch(item.type){
+        ui.switchDisplayById('loadingScreen', 'flex')
+        this.idleShips.map(item => {
+            switch (item.type) {
                 case "small":
-                    modelLoaders.loadSmallShipIdle(item.x,item.y,item.z,item.rotation, loadingManager)
+                    modelLoaders.loadSmallShipIdle(item.x, item.y, item.z, item.rotation, loadingManager)
                     break;
                 case "medium":
-                    modelLoaders.loadMediumShipIdle(item.x,item.y,item.z,item.rotation, loadingManager)
+                    modelLoaders.loadMediumShipIdle(item.x, item.y, item.z, item.rotation, loadingManager)
                     break;
                 case "large":
-                    modelLoaders.loadLargeShipIdle(item.x,item.y,item.z,item.rotation, loadingManager)
+                    modelLoaders.loadLargeShipIdle(item.x, item.y, item.z, item.rotation, loadingManager)
                     break;
                 default:
                     break;
@@ -295,8 +360,8 @@ class Game {
         this.waitForOpponent = true;
         modelLoaders.loadIsland(loadingManager)
         this.scene.add(this.deleteAfterWait)
-        loadingManager.onLoad = ()=> {
-            ui.switchDisplayById('loadingScreen','none')
+        loadingManager.onLoad = () => {
+            ui.switchDisplayById('loadingScreen', 'none')
         }
         // var audio = new Audio('../../sound/soundtrack/waiting theme.mp3');
         // audio.play();
@@ -379,7 +444,7 @@ class Game {
             }
         })
         let temp = this.fieldsToChose
-      
+
     }
     generateGameplayModels() {
         ui.switchDisplayById('loadingScreen', 'flex')

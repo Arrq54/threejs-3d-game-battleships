@@ -51,16 +51,16 @@ class Ui {
             return;
         }
         this.socket.emit('loginSuccess', username);
-        this.socket.on("loginStatus",(data)=>{
-            if(!this.logged){
-                if(data.success){
+        this.socket.on("loginStatus", (data) => {
+            if (!this.logged) {
+                if (data.success) {
                     document.getElementById('loginBox').style.display = 'none'
                     document.body.style.background = 'none'
                     document.getElementById('placeShips').style.display = 'block'
                     this.logged = true;
                     sessionStorage.setItem('username', username);
                     game.pickShips()
-                }else{
+                } else {
                     document.getElementById('loginStatus').innerText = data.errorMessage;
                 }
             }
@@ -75,7 +75,6 @@ class Ui {
         document.getElementsByName('username')[0].style.color = 'whitesmoke'
         document.getElementsByName('username')[0].value = ''
     }
-
 
     switchDisplayById(id, display) {
         document.querySelector(`#${id}`).style.display = display
@@ -108,7 +107,7 @@ class Ui {
         game.ready = true;
         this.socket.emit('shipsReady', data)
     }
-    playAgain(){
+    playAgain() {
         reset();
         document.location.reload()
     }

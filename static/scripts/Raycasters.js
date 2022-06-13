@@ -9,7 +9,7 @@ window.addEventListener("mousedown", (e) => {
         if (item.object.name == "invisibleField")
             console.log(item.object.x + item.object.y)
     })
-    if(!game.gameEnded){
+    if (!game.gameEnded) {
         if (intersects.length > 0) {
             let clickedObject = intersects[0].object;
             // console.log(clickedObject)
@@ -72,11 +72,11 @@ window.addEventListener("mousedown", (e) => {
                         } else {
                             game.cantPlaceArray = game.cantPlaceArray.filter((element) => { return element.fieldId != clicked.fieldId })
                         }
-    
+
                     }
                     else if (clicked.shipType == "3" || clicked.shipType == "4" || clicked.shipType == "9") {
                         (clicked.shipType == "3" || clicked.shipType == "9") ? game.mediumShipsLeft += 1 : game.largeShipsLeft += 1;
-    
+
                         ui.updateRaftsLeft()
                         clicked.material = game.notClickedMat
                         clicked.checked = false
@@ -181,7 +181,7 @@ window.addEventListener("mousedown", (e) => {
                                 }
                             }
                         }
-    
+
                     }
                     else if (game.typeOfChosingShip == 3 && !clicked.checked && clicked.canPutShip && clicked.material != game.clickedMat && clicked.hasShip == false) {
                         //WYBIERANIE STATKU - TRÓJKA
@@ -195,7 +195,7 @@ window.addEventListener("mousedown", (e) => {
                                 field3 = game.fieldsToChoseObjects.find((element) => { return element.x == clickedObject.x && element.y == clickedObject.y - 2 })
                             }
                             if (field2 && field3) {
-    
+
                                 if (field2.canPutShip && !field2.hasShip && field3.canPutShip && !field3.hasShip) {
                                     game.mediumShipsLeft -= 1;
                                     ui.updateRaftsLeft()
@@ -208,7 +208,7 @@ window.addEventListener("mousedown", (e) => {
                                         field2.shipType = "9"
                                         field3.shipType = "9"
                                     }
-    
+
                                     clicked.material = game.clickedMat
                                     field2.material = game.clickedMat
                                     field3.material = game.clickedMat
@@ -247,12 +247,12 @@ window.addEventListener("mousedown", (e) => {
                                     })
                                     game.cantPlaceArray.push({ fieldId: clicked.fieldId, fields: temp })
                                 }
-    
+
                             }
-    
-    
+
+
                         }
-    
+
                     } else if (game.typeOfChosingShip == 4 && !clicked.checked && clicked.canPutShip && clicked.material != game.clickedMat && clicked.hasShip == false) {
                         //WYBIERANIE STATKU - CZWÓRKA
                         if (game.largeShipsLeft != 0) {
@@ -321,12 +321,13 @@ window.addEventListener("mousedown", (e) => {
                                 }
                             }
                         }
-    
+
                     }
                 }
             }
             else if (intersects.some(item => item.object.name == 'invisibleFieldOpp' && item.object.shot == false && game.yourTurn)) {
                 let obj = intersects.find(item => item.object.name == 'invisibleFieldOpp').object
+                console.log("FIELD Y = " + obj.y.toString() + " FIELD X = " + obj.x.toString())
                 let data = {
                     from: sessionStorage.getItem('username'),
                     x: obj.x,
@@ -337,13 +338,13 @@ window.addEventListener("mousedown", (e) => {
             }
         }
     }
-   
+
 })
 
 //              HOVER - NAJEZDZANIE NA POLA I SIE ZMIENIAJA NA ZIELONE
 window.addEventListener("mousemove", (e) => {
     if (game != null) {
-        if(!game.gameEnded){
+        if (!game.gameEnded) {
             const raycaster = new THREE.Raycaster();
             const mouseVector = new THREE.Vector2()
             mouseVector.x = (e.clientX / window.innerWidth) * 2 - 1;
@@ -418,7 +419,7 @@ window.addEventListener("mousemove", (e) => {
                                 game.helpArrayForHover.push(largeShipPart4)
                             }
                             break;
-    
+
                         default:
                             break;
                     }
@@ -437,7 +438,7 @@ window.addEventListener("mousemove", (e) => {
                 }
             }
         }
-       
+
     }
 })
 document.addEventListener("keydown", (e) => {
