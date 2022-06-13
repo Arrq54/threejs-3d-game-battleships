@@ -80,9 +80,15 @@ class Ui {
         document.querySelector(`#${id}`).style.display = display
     }
     setText(id, text) {
+        if (document.querySelector(`#${id}`).textContent.includes('0') && text.includes('1'))
+            document.getElementById('b' + id[1]).classList.remove('empty')
         document.querySelector(`#${id}`).textContent = text
+        if (text.includes('0')) {
+            document.getElementById('b' + id[1]).classList.add('empty')
+        }
     }
     selectShipType(button, type) {
+        if (document.querySelector('#errShips').style.display == 'block') document.querySelector('#errShips').style.display = 'none'
         this.clickedShipChosingButton != null ? this.clickedShipChosingButton.classList.remove("clicked") : this.clickedShipChosingButton = button;
         button.classList.add("clicked")
         this.clickedShipChosingButton = button
@@ -96,7 +102,10 @@ class Ui {
         this.setText("r4", String(game.largeShipsLeft) + "x")
     }
     ready() {
-        if (game.raftsLeft != 0 || game.smallShipsLeft != 0 || game.mediumShipsLeft != 0 || game.largeShipsLeft != 0) return;
+        if (game.raftsLeft != 0 || game.smallShipsLeft != 0 || game.mediumShipsLeft != 0 || game.largeShipsLeft != 0) {
+            document.querySelector('#errShips').style.display = 'block'
+            return
+        }
         game.gatherInfoAboutShips()
         game.loadWaitingScreen()
         let board = game.fieldsToChose

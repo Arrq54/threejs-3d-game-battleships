@@ -19,8 +19,7 @@
 .ui-chosing-ships-buttons {
   z-index: 3;
   position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
+  top: 10%;
   left: 200px;
   width: 200px;
   height: 600px;
@@ -107,7 +106,8 @@ body {
   left: 0;
   margin-top: -10px;
 }
-#playButton, #resetButton {
+#playButton,
+#resetButton {
   text-shadow: 0px 0px 15px rgba(255, 255, 255, 1);
   width: 140px;
   height: 40px;
@@ -123,10 +123,11 @@ body {
   transition: 0.2s ease;
   cursor: pointer;
 }
-#playButton:hover, #resetButton:hover {
+#playButton:hover,
+#resetButton:hover {
   transform: translateX(-50%) scale(1.2);
 }
-.flex{
+.flex {
   display: flex;
   flex-direction: column;
 }
@@ -143,7 +144,7 @@ img {
 }
 .btn-ready {
   position: absolute;
-  right: 100px;
+  right: 200px;
   top: 50%;
   transform: translateY(-50%);
   background-color: white;
@@ -151,17 +152,26 @@ img {
   border-radius: 9px;
   width: 150px;
   text-align: center;
-  border: 1px solid rgb(62, 152, 62);
-  color: rgb(62, 152, 62);
+  border: 1px solid rgb(62, 82, 152);
+  color: rgb(62, 82, 152);
   transition: 0.4s all ease;
   cursor: pointer;
   display: none;
 }
+#errShips {
+  display: none;
+  position: absolute;
+  right: 180px;
+  top: 57%;
+  font-size: 24px;
+  color: red;
+}
+
 .btn-ready:hover {
   transition: 0.4s all ease;
   border: 1px solid white;
   color: white;
-  background-color: rgb(62, 152, 62);
+  background-color: rgb(62, 82, 152);
 }
 
 .loadingScreen {
@@ -238,16 +248,16 @@ img {
   text-shadow: 1px 1px 8px rgb(77, 77, 77);
   opacity: 0;
 }
-#loginStatus{
+#loginStatus {
   color: red;
   text-align: center;
   margin-top: 20px;
 }
-.playAgainButton{
+.playAgainButton {
   border: 3px solid rgb(135, 211, 135);
   position: absolute;
   left: 50%;
-  transform: translate(-50%,0);
+  transform: translate(-50%, 0);
   bottom: 50px;
   background: none;
   color: rgb(135, 211, 135);
@@ -256,9 +266,12 @@ img {
   border-radius: 5px;
   transition: 0.3s all ease;
 }
-.playAgainButton:hover{
-  transform: translate(-50%,-5px);
+.playAgainButton:hover {
+  transform: translate(-50%, -5px);
   background-color: rgb(135, 211, 135);
   color: white;
   transition: 0.3s all ease;
+}
+.empty > img {
+  filter: grayscale(100%);
 }
