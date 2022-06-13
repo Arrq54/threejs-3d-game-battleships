@@ -13,7 +13,7 @@ class Ship extends THREE.Mesh {
         loadingManager.onLoad = () => {
             game.loadedModels += 1;
             if (game.loadedModels >= 7) {
-            ui.switchDisplayById('loadingScreen', 'none')
+                ui.switchDisplayById('loadingScreen', 'none')
             }
         }
         switch (type) {
