@@ -41,7 +41,7 @@
         <button id="playButton">PLAY</button>
         <button id="resetButton" onClick="reset()">RESET</button>
       </div>
-      
+
       <img id="skull" src="./czacha.png" />
       <h4 id="loginStatus"></h4>
     </div>
@@ -52,10 +52,22 @@
       </div>
     </div>
     <div class="loser" id="loser">
-      <button class="playAgainButton" id="playAgainButton" onclick="ui.playAgain()">PLAY AGAIN</button>
+      <button
+        class="playAgainButton"
+        id="playAgainButton"
+        onclick="ui.playAgain()"
+      >
+        PLAY AGAIN
+      </button>
     </div>
     <div class="winner" id="winner">
-      <button class="playAgainButton" id="playAgainButton" onclick="ui.playAgain()">PLAY AGAIN</button>
+      <button
+        class="playAgainButton"
+        id="playAgainButton"
+        onclick="ui.playAgain()"
+      >
+        PLAY AGAIN
+      </button>
     </div>
     <div id="popUp"></div>
     <div id="turn">Your turn!</div>
@@ -69,28 +81,28 @@
       </button> -->
       <div id="root"></div>
       <div class="ui-chosing-ships-buttons" id="shipTypeButtons">
-        <div class="button" id="" onclick="ui.selectShipType(this,1)">
+        <div class="button" id="b1" onclick="ui.selectShipType(this,1)">
           <img
             src="./icons/jedynkaButton.png"
             style="width: 100%; height: 100%"
           />
           <p class="remaining" id="r1">4x</p>
         </div>
-        <div class="button" onclick="ui.selectShipType(this,2)">
+        <div class="button" id="b2" onclick="ui.selectShipType(this,2)">
           <img
             src="./icons/dwujkaButton.png"
             style="width: 100%; height: 100%"
           />
           <p class="remaining" id="r2">3x</p>
         </div>
-        <div class="button" onclick="ui.selectShipType(this,3)">
+        <div class="button" id="b3" onclick="ui.selectShipType(this,3)">
           <img
             src="./icons/trujkaButton.png"
             style="width: 100%; height: 100%"
           />
           <p class="remaining" id="r3">2x</p>
         </div>
-        <div class="button" onclick="ui.selectShipType(this,4)">
+        <div class="button" id="b4" onclick="ui.selectShipType(this,4)">
           <img
             src="./icons/czwurkaButton.png"
             style="width: 100%; height: 100%"
@@ -104,6 +116,7 @@
     <div onclick="ui.ready()" id="ready" class="btn-ready">
       <p>READY</p>
     </div>
+    <div id="errShips">Place all your ships!</div>
     <!-- <button style="position: absolute; left: 10%; top: 10%" onClick="reset()">
       RESET
     </button> -->

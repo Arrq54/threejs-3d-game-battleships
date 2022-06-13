@@ -51,7 +51,7 @@ class Animations {
     }
     cameraToOpponent() {
         new TWEEN.Tween(game.camera.position)
-            .to({ x: 100, y: 450, z: 0 }, 750)
+            .to({ x: -900, y: 450, z: 0 }, 750)
             .repeat(0)
             .easing(TWEEN.Easing.Exponential.In)
             .onUpdate()
@@ -72,10 +72,10 @@ class Animations {
             .easing(TWEEN.Easing.Exponential.Out)
             .onUpdate()
             .onComplete(() => {
-                if(flyingSphere.parent!=undefined){
+                if (flyingSphere.parent != undefined) {
                     flyingSphere.parent.remove(flyingSphere)
                 }
-              
+
                 let geometry = new THREE.SphereBufferGeometry(17, 32, 32)
                 let tesselateModifier = new THREE.TessellateModifier(18, 6);
                 geometry = tesselateModifier.modify(geometry)
@@ -121,16 +121,16 @@ class Animations {
                             }
                         })
                     })
-                    if(attackedShip!=undefined){
-                        destroyed?attackedShip.sink():attackedShip.shake()
+                    if (attackedShip != undefined) {
+                        destroyed ? attackedShip.sink() : attackedShip.shake()
                     }
-                   
-                   
+
+
                 } else {
                     var audio = new Audio('../../sound/effects/hitWater.mp3');
                     audio.play();
                 }
-               
+
             })
             .start()
     }

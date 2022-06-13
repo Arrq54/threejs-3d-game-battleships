@@ -561,7 +561,7 @@ class Game {
 
     }
     generateOpponentsBoard = (xs, zs) => {
-        let xs2 = xs.map(item => item - 900)
+        let xs2 = xs.map(item => item - 1900)
         let rotations2 = [Math.PI / 2, Math.PI / 2, Math.PI / 2, Math.PI / 2, Math.PI / 2, Math.PI / 2, Math.PI / 2, Math.PI / 2, Math.PI / 2, Math.PI / 2, Math.PI / 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
         xs2.map((e, i) => {
             this.addTableLine(xs2[i], zs[i], rotations2[i])
@@ -573,7 +573,7 @@ class Game {
         for (let i = 0; i < 10; i++)
             for (let j = 0; j < 10; j++) {
                 let field = new InvisibleField(geometry, material, i, j, 'invisibleFieldOpp')
-                field.position.set(325 - i * 50, 27, 725 - j * 50)
+                field.position.set(-675 - i * 50, 27, 725 - j * 50)
                 this.scene.add(field)
                 this.opponentFields.push(field)
             }
