@@ -67,8 +67,6 @@ class Game {
             this.deleteAfterWait.parent.remove(this.deleteAfterWait)
             ui.switchDisplayById('wait', 'none')
             if (this.yourTurn) animations.cameraToOpponent()
-            console.log("START")
-
             this.waitForOpponent = false;
             let turnInfo = document.getElementById('turn')
             if (this.yourTurn) {
@@ -98,7 +96,6 @@ class Game {
         this.deleteAfterWait = new THREE.Object3D()
         this.socket.emit('getDatabaseContent', {})
         this.socket.on('databasedata', (data) => {
-            console.log(data)
             this.idleShips = data.idleShips;
             this.myBoard = data.myBoard
         })
@@ -134,7 +131,6 @@ class Game {
         await new Promise(r => setTimeout(r, 250));
         data.answer == 'miss' ? animations.cannonBall(field.position.x, field.position.z, 0, 0.88, 0.47, field) : animations.cannonBall(field.position.x, field.position.z, 0.288, 0.88, 0.47, field)
         let turn = data.rotation
-        console.log(data.ship)
         if (data.destroyed) {
             let x = data.cordinates.x
             let y = data.cordinates.y
@@ -252,7 +248,6 @@ class Game {
 
     answerHit = async (data) => {
         this.changeTurn()
-        console.log(data)
         this.fieldsToChose = data.board
         let field = this.allyFields.find(item => item.x == data.cordinates.x && item.y == data.cordinates.y)
         data.answer == "hit" ? field.changeMaterial(new THREE.MeshBasicMaterial({ color: "#ff1929", transparent: true, opacity: 0.8 })) : field.changeMaterial(new THREE.MeshBasicMaterial({ transparent: true, map: new THREE.TextureLoader().load('../../textures/cantPlaceTransparent.png') }))
@@ -464,7 +459,6 @@ class Game {
         })
         this.generateOpponentsBoard(xs, zs)
         //GENEROWANIE MODELI STATKOW NA PODSTAWIE TABELI WYBRANYCH PÓL
-        console.log("GENEROWANIE STATKOW")
         let raftRandomDirection = [Math.PI, -Math.PI, Math.PI / 2]
         let smallShipRandomDirectionHorizontal = [Math.PI / 2, -Math.PI / 2]
         let smallShipRandomDirectionVertical = [0, Math.PI]

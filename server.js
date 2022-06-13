@@ -58,7 +58,6 @@ io.on('connection', (socket) => {
             activeUsers.push(data)
         }
         if (!activeUsers.some(item => typeof (item) == 'string') && activeUsers.length == 2) {
-            console.log("STARTING")
             io.emit('gameStart', {
                 turn: activeUsers[Math.round(Math.random())]
             })
@@ -113,7 +112,6 @@ io.on('connection', (socket) => {
         let rotation = null;
         if (destroyed) {
             let oar = playerToGetShot.board
-            console.log(oar)
             let y = data.y
             let x = data.x
             if (oar[y][x - 1] != undefined && oar[y][x - 1].toString().includes(hitShip)) rotation = '-x'
