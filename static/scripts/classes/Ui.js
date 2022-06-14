@@ -106,6 +106,7 @@ class Ui {
             document.querySelector('#errShips').style.display = 'block'
             return
         }
+        document.querySelector('#errShips').style.display = 'none'
         game.gatherInfoAboutShips()
         game.loadWaitingScreen()
         let board = game.fieldsToChose
