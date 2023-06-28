@@ -1,7 +1,7 @@
 
 # Battleships 3D
 
-> A  [traditional Battleships](https://en.wikipedia.org/wiki/Battleship_(game)) game brought into life with 3D models, shaders and visual effects. I made it with my friend as a school project 
+> A  [traditional Battleships game](https://en.wikipedia.org/wiki/Battleship_(game)) brought into life with 3D models, shaders and visual effects. I made it with my friend as a school project 
 
 
 ---
